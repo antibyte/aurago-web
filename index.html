@@ -3,144 +3,1687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuraGo - AI Agent Framework</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjc.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:300,400,500,600,700&amp;family=Roboto+Mono:400,500&display=swap">
+    <title data-i18n="meta.title">AuraGo - Dein Home Lab AI Agent</title>
+    <meta name="description" data-i18n-attr="content" data-i18n="meta.desc" content="AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Single Binary, zero dependencies, läuft auf jedem Linux-Server oder Raspberry Pi.">
+    <meta property="og:title" content="AuraGo - Home Lab AI Agent">
+    <meta property="og:description" content="Self-hosted AI agent with 100+ tools, memory system, web UI and PWA. Runs on your hardware.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/antibyte/AuraGo">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" type="image/png">
+    <style>
+        :root {
+            --bg: #050508;
+            --bg-elevated: #0a0a10;
+            --bg-card: #0e0e14;
+            --bg-card-hover: #13131c;
+            --surface: rgba(255,255,255,0.03);
+            --accent: #c49b5a;
+            --accent-glow: rgba(196, 155, 90, 0.25);
+            --text: #e8e6e1;
+            --text-secondary: #9a958d;
+            --text-muted: #5c574f;
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 22px;
+            --radius-xl: 32px;
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --transition: 400ms cubic-bezier(0.32, 0.72, 0, 1);
+            --transition-fast: 200ms cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        h1, h2, h3, h4, p, li { text-wrap: balance; }
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 1000;
+            opacity: 0.022;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .ambient-glow {
+            position: fixed;
+            width: 700px; height: 700px;
+            border-radius: 50%;
+            filter: blur(140px);
+            pointer-events: none; z-index: 0;
+            opacity: 0.12;
+        }
+        .ambient-glow.a { top: -250px; left: 20%; background: radial-gradient(circle, var(--accent), transparent 70%); }
+        .ambient-glow.b { top: 40%; right: -200px; background: radial-gradient(circle, rgba(196,155,90,0.2), transparent 70%); }
+        .ambient-glow.c { bottom: -100px; left: -100px; background: radial-gradient(circle, var(--accent), transparent 70%); opacity: 0.08; }
+
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        button { cursor: pointer; font: inherit; border: none; background: none; color: inherit; }
+
+        .skip-link {
+            position: absolute; top: -100%;
+            left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: var(--bg);
+            padding: 0.6rem 1.2rem; border-radius: var(--radius-sm);
+            font-weight: 600; font-size: 0.85rem; z-index: 200;
+            transition: top var(--transition-fast);
+        }
+        .skip-link:focus { top: 1rem; }
+
+
+        .container { max-width: 1200px; margin: 0 auto; padding-inline: 1.5rem; position: relative; z-index: 1; }
+
+        .eyebrow {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.35rem 0.9rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.7rem; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--accent); margin-bottom: 1.25rem;
+        }
+        .eyebrow-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent-glow);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            position: fixed;
+            top: 1rem; left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(10,10,16,0.65);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            display: flex; align-items: center; gap: 2rem;
+            transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+        .navbar.scrolled {
+            background: rgba(10,10,16,0.88);
+            border-color: var(--border-hover);
+            box-shadow: 0 8px 32px rgba(5,5,8,0.4);
+        }
+        .logo {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-weight: 700; font-size: 0.95rem;
+            font-family: var(--font-mono);
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+        .logo img { width: 28px; height: 28px; object-fit: contain; border-radius: 8px; }
+        .logo span { color: var(--text); }
+        .logo span span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 1.6rem; align-items: center; }
+        .nav-links a {
+            font-size: 0.78rem; font-weight: 500;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+            position: relative;
+            white-space: nowrap;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a.nav-active { color: var(--accent); }
+        .nav-links a.nav-active::after { width: 100%; }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 1.5px;
+            background: var(--accent); border-radius: 2px;
+            transition: width var(--transition-fast);
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        .lang-switch {
+            display: flex; align-items: center; gap: 0.3rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.25rem;
+            font-size: 0.7rem; font-weight: 600;
+            font-family: var(--font-mono);
+        }
+        .lang-switch button {
+            padding: 0.25rem 0.55rem;
+            border-radius: 50px;
+            color: var(--text-muted);
+            transition: all var(--transition-fast);
+        }
+        .lang-switch button:hover { color: var(--text-secondary); }
+        .lang-switch button.active {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        .mobile-menu-btn { display: none; font-size: 1.3rem; color: var(--text); }
+
+        /* ===== Hero ===== */
+        .hero {
+            min-height: 100dvh;
+            display: flex; align-items: center;
+            padding: 6rem 0 4rem;
+            position: relative;
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .hero h1 {
+            font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+            line-height: 1.05; font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.25rem;
+            max-width: 520px;
+        }
+        .hero h1 em { font-style: normal; color: var(--accent); }
+        .hero p {
+            font-size: 1.05rem; color: var(--text-secondary);
+            max-width: 480px; margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        .hero-badges {
+            display: flex; gap: 0.6rem; flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.72rem; font-weight: 500;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+        .hero-badge .dot { width: 5px; height: 5px; border-radius: 50%; }
+        .hero-badge.ok .dot { background: #4ade80; }
+        .hero-badge.warn .dot { background: #f59e0b; }
+
+        .cta-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.7rem 1.6rem;
+            border-radius: 50px;
+            font-weight: 600; font-size: 0.88rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--accent); color: var(--bg); }
+        .btn-primary:hover { background: #d4aa6a; box-shadow: 0 0 28px var(--accent-glow); }
+        .btn-ghost { border: 1px solid var(--border-hover); color: var(--text); }
+        .btn-ghost:hover { border-color: var(--accent); background: rgba(196,155,90,0.06); }
+        .btn-arrow {
+            width: 20px; height: 20px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: rgba(5,5,8,0.15);
+            font-size: 0.7rem;
+            transition: transform var(--transition-fast);
+        }
+        .btn:hover .btn-arrow { transform: translate(2px, -1px); }
+
+        .hero-visual { position: relative; }
+        .hero-screenshot {
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(5,5,8,0.5), 0 0 60px rgba(196,155,90,0.08);
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+        .hero-screenshot:hover {
+            box-shadow: 0 28px 90px rgba(5,5,8,0.6), 0 0 80px rgba(196,155,90,0.12);
+            transform: translateY(-4px);
+        }
+        .hero-screenshot img { width: 100%; height: auto; display: block; }
+
+        /* ===== Section Base ===== */
+        section { padding: 6rem 0 7rem; position: relative; }
+        .section-header { max-width: 580px; margin-bottom: 3rem; }
+        .section-header.center { margin-left: auto; margin-right: auto; text-align: center; }
+        .section-header h2 {
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 700; letter-spacing: -0.025em;
+            line-height: 1.15; margin-bottom: 0.75rem;
+        }
+        .section-header h2 em { font-style: normal; color: var(--accent); }
+        .section-header p { color: var(--text-secondary); font-size: 1rem; line-height: 1.7; }
+
+        /* ===== Bento Grid ===== */
+        .features-section { background: var(--bg-elevated); border-top: 1px solid var(--border); }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.6rem;
+            transition: all var(--transition);
+            position: relative; overflow: hidden;
+        }
+        .bento-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0; transition: opacity var(--transition);
+        }
+        .bento-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(5,5,8,0.35);
+        }
+        .bento-card:hover::before { opacity: 0.5; }
+        .bento-card.col-2 { grid-column: span 2; }
+        .bento-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: rgba(196,155,90,0.08);
+            border: 1px solid rgba(196,155,90,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; margin-bottom: 1rem;
+            transition: all var(--transition);
+        }
+        .bento-card:hover .bento-icon {
+            box-shadow: 0 0 20px rgba(196,155,90,0.15);
+            background: rgba(196,155,90,0.12);
+        }
+        .bento-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+        .bento-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; }
+        .bento-card .tag-list {
+            display: flex; flex-wrap: wrap; gap: 0.35rem;
+            margin-top: 0.75rem;
+        }
+        .bento-card .tag {
+            padding: 0.15rem 0.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        /* ===== Gallery ===== */
+        .gallery-section { padding: 5rem 0; }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+        }
+        .gallery-item {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all var(--transition);
+        }
+        .gallery-item:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(5,5,8,0.4);
+        }
+        .gallery-item img {
+            width: 100%; height: auto; display: block;
+            transition: transform 0.6s cubic-bezier(0.32,0.72,0,1);
+        }
+        .gallery-item:hover img { transform: scale(1.03); }
+        .gallery-item .gallery-label {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(5,5,8,0.85));
+            font-size: 0.8rem; font-weight: 600;
+            opacity: 0; transition: opacity var(--transition);
+        }
+        .gallery-item:hover .gallery-label { opacity: 1; }
+        .gallery-item.wide { grid-column: span 2; }
+
+        /* ===== Themes ===== */
+        .themes-section { padding: 5rem 0; }
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .theme-card {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .theme-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 16px 40px rgba(5,5,8,0.35);
+        }
+        .theme-card img {
+            width: 100%; aspect-ratio: 16/10;
+            object-fit: cover; display: block;
+        }
+        .theme-card .tc-name {
+            padding: 0.8rem 1rem;
+            font-size: 0.8rem; font-weight: 600;
+            text-align: center;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== Tools ===== */
+        .tools-section { background: var(--bg-elevated); border-top: 1px solid var(--border); }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+        }
+        .tool-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            transition: all var(--transition);
+        }
+        .tool-category:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+        .tool-category h4 {
+            font-size: 0.78rem; font-weight: 600;
+            color: var(--accent); margin-bottom: 0.6rem;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .tool-category ul { display: flex; flex-direction: column; gap: 0.25rem; }
+        .tool-category li {
+            font-size: 0.72rem; color: var(--text-secondary);
+            padding-left: 0.6rem; position: relative;
+        }
+        .tool-category li::before { content: '·'; position: absolute; left: 0; color: var(--text-muted); }
+
+        /* ===== Memory ===== */
+        .memory-section { padding: 5rem 0; }
+        .memory-visual {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+        }
+        .memory-visual img { width: 100%; display: block; }
+        .memory-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .memory-item {
+            display: flex; gap: 1rem; align-items: flex-start;
+            padding: 1rem 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: all var(--transition);
+        }
+        .memory-item:hover {
+            border-color: var(--border-hover);
+            transform: translateX(4px);
+        }
+        .memory-item .mi-icon {
+            width: 32px; height: 32px; flex-shrink: 0;
+            border-radius: 8px;
+            background: rgba(196,155,90,0.08);
+            border: 1px solid rgba(196,155,90,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+        }
+        .memory-item h4 { font-size: 0.82rem; font-weight: 600; margin-bottom: 0.15rem; }
+        .memory-item p { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.55; }
+
+        /* ===== Requirements ===== */
+        .req-section { padding: 5rem 0; }
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .req-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.8rem 1.5rem;
+            text-align: center;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .req-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(5,5,8,0.35);
+        }
+        .req-card.recommended {
+            border-color: rgba(196,155,90,0.25);
+            background: rgba(196,155,90,0.03);
+        }
+        .req-card.recommended::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0.6;
+        }
+        .req-badge {
+            display: inline-block;
+            padding: 0.25rem 0.7rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .req-card.recommended .req-badge {
+            background: rgba(196,155,90,0.1);
+            border-color: rgba(196,155,90,0.25);
+            color: var(--accent);
+        }
+        .req-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.02em;
+        }
+        .req-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+        .req-spec {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+        .req-spec-icon {
+            font-size: 0.9rem;
+            width: 20px;
+            text-align: center;
+        }
+        .req-spec strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .req-grid { grid-template-columns: 1fr; max-width: 400px; }
+        }
+        /* ===== Install ===== */
+        .install-section { background: var(--bg-elevated); border-top: 1px solid var(--border); }
+        .install-tabs {
+            display: flex; gap: 0.3rem; margin-bottom: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.3rem;
+            width: fit-content;
+        }
+        .install-tab {
+            padding: 0.45rem 1rem;
+            border-radius: 50px;
+            font-size: 0.78rem; font-weight: 500;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+        .install-tab:hover { color: var(--text); }
+        .install-tab.active { background: var(--accent); color: var(--bg); font-weight: 600; }
+        .install-panel { display: none; }
+        .install-panel.active { display: block; }
+        .code-block {
+            background: #07070c;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+        }
+        .code-block .cb-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.55rem 1rem;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+        }
+        .code-block .cb-filename {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+        .copy-btn {
+            font-size: 0.7rem; font-weight: 500;
+            color: var(--text-muted);
+            padding: 0.25rem 0.7rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all var(--transition-fast);
+            font-family: var(--font-sans);
+        }
+        .copy-btn:hover { color: var(--text); border-color: var(--border-hover); }
+        .copy-btn.copied { color: #4ade80; border-color: #4ade80; background: rgba(74,222,128,0.06); }
+        .code-block pre {
+            padding: 1rem 1.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            line-height: 1.75;
+            overflow-x: auto;
+            color: var(--text-secondary);
+        }
+        .code-block pre .c { color: var(--text-muted); }
+        .code-block pre .v { color: #b8a88a; }
+        .code-block pre .s { color: #7ec699; }
+        .code-block pre .n { color: #d19a66; }
+
+        /* ===== FAQ ===== */
+        .faq-section { background: var(--bg-elevated); border-top: 1px solid var(--border); }
+        .faq-list { max-width: 720px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid var(--border); }
+        .faq-item:first-child { border-top: 1px solid var(--border); }
+        .faq-q {
+            width: 100%; text-align: left;
+            padding: 1.1rem 0;
+            font-weight: 600; font-size: 0.92rem;
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 1rem;
+            transition: color var(--transition-fast);
+        }
+        .faq-q:hover { color: var(--accent); }
+        .faq-arrow {
+            font-size: 0.65rem; color: var(--text-muted);
+            transition: transform var(--transition);
+            flex-shrink: 0;
+        }
+        .faq-item.open .faq-arrow { transform: rotate(180deg); color: var(--accent); }
+        .faq-a {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.32,0.72,0,1), padding 0.4s cubic-bezier(0.32,0.72,0,1);
+        }
+        .faq-item.open .faq-a { max-height: 300px; padding-bottom: 1.1rem; }
+        .faq-a p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; }
+        .faq-a a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
+        /* ===== Footer ===== */
+        .footer { padding: 3rem 0 2rem; border-top: 1px solid var(--border); }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .footer-brand .logo { margin-bottom: 0.6rem; }
+        .footer-brand p {
+            font-size: 0.8rem; color: var(--text-muted);
+            line-height: 1.65; max-width: 280px;
+        }
+        .footer-col h4 {
+            font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-muted); margin-bottom: 0.8rem;
+        }
+        .footer-col ul { display: flex; flex-direction: column; gap: 0.35rem; }
+        .footer-col a {
+            font-size: 0.8rem; color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom {
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 0.5rem;
+            font-size: 0.72rem; color: var(--text-muted);
+        }
+
+        /* ===== Scroll Reveal ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            filter: blur(2px);
+            transition: opacity 0.7s cubic-bezier(0.32,0.72,0,1), transform 0.7s cubic-bezier(0.32,0.72,0,1), filter 0.7s cubic-bezier(0.32,0.72,0,1);
+        }
+        .reveal.revealed { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .hero { padding-top: 6rem; text-align: center; }
+            .hero h1, .hero p { margin-left: auto; margin-right: auto; }
+            .hero-badges, .cta-row { justify-content: center; }
+            .memory-list { grid-template-columns: 1fr; }
+            .themes-grid { grid-template-columns: repeat(2, 1fr); }
+            .tools-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .navbar { width: calc(100% - 2rem); padding: 0.5rem 1rem; gap: 0.8rem; flex-wrap: wrap; }
+            .nav-links {
+                display: none; position: absolute;
+                top: calc(100% + 0.5rem); left: 0; right: 0;
+                flex-direction: column;
+                background: rgba(10,10,16,0.97);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                padding: 1rem; gap: 0.5rem;
+            }
+            .nav-links.nav-open { display: flex; }
+            .nav-links a { padding: 0.5rem 0; font-size: 0.85rem; }
+            .mobile-menu-btn { display: block; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-card.col-2 { grid-column: span 1; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.wide { grid-column: span 1; }
+            .themes-grid { grid-template-columns: 1fr 1fr; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            section { padding: 3.5rem 0 4rem; }
+            .install-tabs { width: 100%; overflow-x: auto; border-radius: var(--radius-md); }
+            .lang-switch { order: -1; margin-left: auto; }
+            section { padding: 4rem 0 5rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+            .reveal { opacity: 1; transform: none; filter: none; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <a href="/" class="logo">
-                <i class="fas fa-robot"></i>
-                <span>AuraGo</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#docs">Docs</a></li>
-                <li><a href="#github">GitHub</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+    <div id="nav-sentinel" style="position:absolute;top:0;left:0;width:100%;height:1px;pointer-events:none" aria-hidden="true"></div>
+    <a href="#home" class="skip-link" data-i18n="skipLink">Zum Inhalt springen</a>
+
+    <div class="ambient-glow a"></div>
+    <div class="ambient-glow b"></div>
+    <div class="ambient-glow c"></div>
+
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">
+            <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" alt="AuraGo" loading="lazy">
+            <span>Aura<span>Go</span></span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#features" data-i18n="nav.features">Features</a></li>
+            <li><a href="#gallery" data-i18n="nav.screenshots">Screenshots</a></li>
+            <li><a href="#tools" data-i18n="nav.tools">Tools</a></li>
+            <li><a href="#memory" data-i18n="nav.memory">Memory</a></li>
+            <li><a href="#install" data-i18n="nav.install">Install</a></li>
+            <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+            <li><a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener" data-i18n="nav.github">GitHub</a></li>
+        </ul>
+        <div class="lang-switch" id="langSwitch">
+            <button data-lang="de" class="active">DE</button>
+            <button data-lang="en">EN</button>
         </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">&#9776;</button>
     </nav>
 
-    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="container">
-            <div class="hero-content">
-                <h1>Build Autonomous AI Partners with <span class="highlight">AuraGo</span></h1>
-                <p>A minimalistic, extensible AI agent framework written in Go. Create intelligent assistants that can execute tasks, manage systems, and interact with APIs autonomously.</p>
-                <div class="cta-buttons">
-                    <a href="#docs" class="btn btn-primary">
-                        <i class="fas fa-book"></i> Get Started
-                    </a>
-                    <a href="https://github.com/antibyte/AuraGo" target="_blank" class="btn btn-secondary">
-                        <i class="fab fa-github"></i> View on GitHub
-                    </a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="terminal-window">
-                    <div class="terminal-header">
-                        <div class="terminal-dots">
-                            <span class="dot red"></span>
-                            <span class="dot yellow"></span>
-                            <span class="dot green"></span>
-                        </div>
-                        <div class="terminal-title">aurago@terminal ~</div>
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="hero.eyebrow">Open Source &middot; Self-Hosted</span></div>
+                    <h1 data-i18n="hero.title">Dein <em>Home Lab AI Agent</em> - single binary, zero dependencies</h1>
+                    <p data-i18n="hero.desc">AuraGo läuft auf deiner Hardware mit direktem Zugriff auf deine Infrastruktur. Alle Daten bleiben lokal, 24/7.</p>
+                    <div class="hero-badges">
+                        <span class="hero-badge ok"><span class="dot"></span>Go 1.26+</span>
+                        <span class="hero-badge ok"><span class="dot"></span>MIT License</span>
+                        <span class="hero-badge ok"><span class="dot"></span>Docker Ready</span>
                     </div>
-                    <div class="terminal-body">
-                        <div class="terminal-line"><span class="prompt">$</span> aurago deploy web-app</div>
-                        <div class="terminal-line">⚡ Checking dependencies...</div>
-                        <div class="terminal-line">⚡ Building container image...</div>
-                        <div class="terminal-line">⚠ Deploying to production...</div>
-                        <div class="terminal-line">⟑� Web application deployed successfully!</div>
-                        <div class="terminal-line"><span class="prompt">$</span> <span class="cursor">⟐</span></div>
+                    <div class="cta-row">
+                        <a href="#install" class="btn btn-primary"><span data-i18n="hero.cta1">Jetzt installieren</span> <span class="btn-arrow">&#8594;</span></a>
+                        <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="hero.cta2">Auf GitHub ansehen</a>
+                    </div>
+                </div>
+                <div class="hero-visual reveal">
+                    <div class="hero-screenshot">
+                        <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png" alt="AuraGo Dashboard" loading="eager">
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
+    <section id="features" class="features-section">
         <div class="container">
-            <h2 class="section-title">Powerful Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Fast & Efficient</h3>
-                    <p>Written in Go for high performance and low memory footprint. Handles concurrent tasks effortlessly.</p>
+            <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="features.eyebrow">Was AuraGo kann</span></div>
+                <h2 data-i18n="features.title">Alles, was ein <em>AI Agent</em> braucht</h2>
+                <p data-i18n="features.subtitle">100+ integrierte Tools, ein leistungsfähiges Memory-System, Security-First-Architektur und eine vollständige Web-Oberfläche.</p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-card reveal">
+                    <div class="bento-icon">&#129504;</div>
+                    <h3>Personality Engine V2</h3>
+                    <p data-i18n="features.personality">Lernt deine Präferenzen, deinen Tech-Stack und Kommunikationsstil kennen. Passt sich über Zeit an dich an und entwickelt eine eigene Persönlichkeit.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-tools"></i>
-                    </div>
-                    <h3>Extensible Tools</h3>
-                    <p>Plugin-based tool system. Add custom tools for APIs, databases, file operations, and more.</p>
+                <div class="bento-card reveal">
+                    <div class="bento-icon">&#128737;</div>
+                    <h3>LLM Guardian</h3>
+                    <p data-i18n="features.guardian">AI-gestützter Security-Scanner überwacht jeden Tool-Call und externen Content auf Bedrohungen. Bevor etwas passiert.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>Autonomous Partner</h3>
-                    <p>Can perform multi-step tasks independently with reasoning, planning, and error recovery.</p>
+                <div class="bento-card reveal">
+                    <div class="bento-icon">&#9889;</div>
+                    <h3>Adaptive Tools</h3>
+                    <p data-i18n="features.adaptive">Intelligente Filterung von 100+ Tools basierend auf dem Gesprächskontext. Spart Tokens, verbessert Genauigkeit.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
+                <div class="bento-card col-2 reveal">
+                    <div class="bento-icon">&#128274;</div>
+                    <h3>AES-256 Vault</h3>
+                    <p data-i18n="features.vault">Alle Secrets mit AES-256-GCM verschlüsselt. Kein Zugriff durch den Agenten. Web UI mit bcrypt-Passwörtern und TOTP 2FA. Granulare Danger-Zone-Toggles für Shell, Python, Filesystem, Network und Self-Update.</p>
+                </div>
+                <div class="bento-card reveal">
+                    <div class="bento-icon">&#128242;</div>
+                    <h3>PWA &amp; Mobile</h3>
+                    <p data-i18n="features.pwa">Als Progressive Web App installierbar. Sprachsteuerung und TTS für ein natives Mobile-Erlebnis. Verschiedene Chat-Themes: Cyberwar, Retro CRT, Dark Sun, Lollipop.</p>
+                </div>
+                <div class="bento-card reveal">
+                    <div class="bento-icon">&#127912;</div>
+                    <h3>Generative Media</h3>
+                    <p data-i18n="features.media">Erstelle Bilder, Musik und kurze Videos. PDF-Generierung für Rechnungen und Berichte. Dokumenten-Extraktion mit LLM-Zusammenfassung.</p>
+                </div>
+                <div class="bento-card col-2 reveal">
+                    <div class="bento-icon">&#129302;</div>
+                    <h3>Native Function Calling</h3>
+                    <p data-i18n="features.fncall">OpenAI-kompatible Tool-Calls mit Auto-Detection für viele Modelle. Unterstützung für OpenAI, Anthropic, Ollama und alle OpenAI-kompatiblen APIs.</p>
+                    <div class="tag-list">
+                        <span class="tag">OpenAI</span>
+                        <span class="tag">Anthropic</span>
+                        <span class="tag">Ollama</span>
+                        <span class="tag">OpenRouter</span>
                     </div>
-                    <h3>Security First</h3>
-                    <p>Built-in security measures, isolated execution, and encrypted secrets management.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer id="contact">
+    <section id="gallery" class="gallery-section">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="logo">
-                        <i class="fas fa-robot"></i>
-                        <span>AuraGo</span>
-                    </div>
-                    <p>An open-source AI agent framework for developers and enthusiasts.</p>
+            <div class="section-header center reveal">
+                <h2 data-i18n="gallery.title">So sieht <em>AuraGo</em> aus</h2>
+                <p data-i18n="gallery.subtitle">Dashboard, Chat, Container-Management, Konfiguration und Themes - alles aus dem Browser.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png" alt="Dashboard" loading="lazy">
+                    <div class="gallery-label" data-i18n="gallery.dashboard">Dashboard</div>
                 </div>
-                <div class="footer-links">
-                    <h4>Resources</h4>
+                <div class="gallery-item reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/chat.png" alt="Chat" loading="lazy">
+                    <div class="gallery-label" data-i18n="gallery.chat">Chat</div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/containers.png" alt="Containers" loading="lazy">
+                    <div class="gallery-label" data-i18n="gallery.containers">Container Management</div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/config.png" alt="Config" loading="lazy">
+                    <div class="gallery-label" data-i18n="gallery.config">Konfiguration</div>
+                </div>
+                <div class="gallery-item wide reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/desktop.png" alt="Virtual Desktop" loading="lazy">
+                    <div class="gallery-label" data-i18n="gallery.desktop">Virtual Desktop im Browser</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="themes-section">
+        <div class="container">
+            <div class="section-header center reveal">
+                <h2 data-i18n="themes.title">Wähle dein <em>Theme</em></h2>
+                <p data-i18n="themes.subtitle">Von Cyberwar über Retro CRT bis Lollipop - finde deinen Stil.</p>
+            </div>
+            <div class="themes-grid">
+                <div class="theme-card reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme1.png" alt="Cyberwar" loading="lazy">
+                    <div class="tc-name">Cyberwar</div>
+                </div>
+                <div class="theme-card reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme2.png" alt="Retro CRT" loading="lazy">
+                    <div class="tc-name">Retro CRT</div>
+                </div>
+                <div class="theme-card reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme3.png" alt="Dark Sun" loading="lazy">
+                    <div class="tc-name">Dark Sun</div>
+                </div>
+                <div class="theme-card reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme4.png" alt="Lollipop" loading="lazy">
+                    <div class="tc-name">Lollipop</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools" class="tools-section">
+        <div class="container">
+            <div class="section-header center reveal">
+                <h2 data-i18n="tools.title">Verbinde <em>alles</em> - aus der Box</h2>
+                <p data-i18n="tools.subtitle">Von Home Assistant über Docker bis zu Google Workspace. Keine shady Skills aus dem Internet nötig.</p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-category reveal">
+                    <h4>&#127968; <span data-i18n="tools.home">Home Lab</span></h4>
                     <ul>
-                        <li><a href="#docs">Documentation</a></li>
-                        <li><a href="https://github.com/antibyte/AuraGo">Source Code</a></li>
-                        <li><a href="#">API Reference</a></li>
-                        <li><a href="#">Examples</a></li>
+                        <li data-i18n="tools.hl1">Docker &amp; Compose</li>
+                        <li data-i18n="tools.hl2">Proxmox VMs / LXC</li>
+                        <li data-i18n="tools.hl3">Home Assistant</li>
+                        <li data-i18n="tools.hl4">TrueNAS / ZFS</li>
+                        <li data-i18n="tools.hl5">Wake-on-LAN</li>
+                        <li data-i18n="tools.hl6">AdGuard Home</li>
+                        <li data-i18n="tools.hl7">Fritz!Box TR-064</li>
                     </ul>
                 </div>
-                <div class="footer-links">
-                    <h4>Community</h4>
+                <div class="tool-category reveal">
+                    <h4>&#128187; <span data-i18n="tools.system">System</span></h4>
                     <ul>
-                        <li><a href="#">GitHub Discussions</a></li>
-                        <li><a href="#">Discord</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Blog</a></li>
+                        <li data-i18n="tools.sy1">Shell &amp; Python Sandbox</li>
+                        <li data-i18n="tools.sy2">SSH Inventory</li>
+                        <li data-i18n="tools.sy3">Ansible Playbooks</li>
+                        <li data-i18n="tools.sy4">Cron / Missions</li>
+                        <li data-i18n="tools.sy5">Tailscale VPN</li>
+                        <li data-i18n="tools.sy6">Firewall Monitor</li>
+                    </ul>
+                </div>
+                <div class="tool-category reveal">
+                    <h4>&#9729;&#65039; <span data-i18n="tools.cloud">Cloud</span></h4>
+                    <ul>
+                        <li data-i18n="tools.cl1">Google Workspace</li>
+                        <li data-i18n="tools.cl2">GitHub Repos / Issues</li>
+                        <li data-i18n="tools.cl3">S3 / MinIO / Wasabi</li>
+                        <li data-i18n="tools.cl4">OneDrive (Graph API)</li>
+                        <li data-i18n="tools.cl5">Netlify Deploy</li>
+                        <li data-i18n="tools.cl6">Cloudflare Tunnel</li>
+                        <li data-i18n="tools.cl7">WebDAV / Koofr</li>
+                    </ul>
+                </div>
+                <div class="tool-category reveal">
+                    <h4>&#128172; <span data-i18n="tools.comm">Communication</span></h4>
+                    <ul>
+                        <li data-i18n="tools.co1">Telegram Bot</li>
+                        <li data-i18n="tools.co2">Discord Integration</li>
+                        <li data-i18n="tools.co3">Rocket.Chat</li>
+                        <li data-i18n="tools.co4">Email IMAP + SMTP</li>
+                        <li data-i18n="tools.co5">Telnyx SMS/Voice</li>
+                        <li data-i18n="tools.co6">Pushover / ntfy</li>
+                    </ul>
+                </div>
+                <div class="tool-category reveal">
+                    <h4>&#128295; <span data-i18n="tools.dev">Dev &amp; Media</span></h4>
+                    <ul>
+                        <li data-i18n="tools.dv1">Git Operations</li>
+                        <li data-i18n="tools.dv2">DuckDuckGo / Brave Search</li>
+                        <li data-i18n="tools.dv3">VirusTotal Scan</li>
+                        <li data-i18n="tools.dv4">Vision (Bildanalyse)</li>
+                        <li data-i18n="tools.dv5">TTS (Google, ElevenLabs, Piper)</li>
+                        <li data-i18n="tools.dv6">Whisper Transcription</li>
+                    </ul>
+                </div>
+                <div class="tool-category reveal">
+                    <h4>&#128444;&#65039; <span data-i18n="tools.gen">Generative</span></h4>
+                    <ul>
+                        <li data-i18n="tools.gn1">Image Generation</li>
+                        <li data-i18n="tools.gn2">Music &amp; Video Gen</li>
+                        <li data-i18n="tools.gn3">Media Registry</li>
+                        <li data-i18n="tools.gn4">PDF Creator (maroto)</li>
+                        <li data-i18n="tools.gn5">Chromecast</li>
+                        <li data-i18n="tools.gn6">Web Screenshots</li>
+                    </ul>
+                </div>
+                <div class="tool-category reveal">
+                    <h4>&#127760; <span data-i18n="tools.net">Network</span></h4>
+                    <ul>
+                        <li data-i18n="tools.nt1">Ping &amp; Port Scan</li>
+                        <li data-i18n="tools.nt2">mDNS / UPnP Discovery</li>
+                        <li data-i18n="tools.nt3">Web Capture</li>
+                        <li data-i18n="tools.nt4">SQL (PostgreSQL, MySQL, SQLite)</li>
+                        <li data-i18n="tools.nt5">Outgoing Webhooks</li>
+                        <li data-i18n="tools.nt6">Incoming Webhooks</li>
+                    </ul>
+                </div>
+                <div class="tool-category reveal">
+                    <h4>&#128228; <span data-i18n="tools.incoming">Incoming</span></h4>
+                    <ul>
+                        <li data-i18n="tools.ic1">GitHub Webhooks</li>
+                        <li data-i18n="tools.ic2">Alertmanager</li>
+                        <li data-i18n="tools.ic3">Home Assistant Events</li>
+                        <li data-i18n="tools.ic4">MeshCentral RMM</li>
+                        <li data-i18n="tools.ic5">Homepage Dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="memory" class="memory-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 data-i18n="memory.title">Er erinnert sich. <em>Wirklich.</em></h2>
+                <p data-i18n="memory.subtitle">AuraGo plaudert nicht nur, es behält. Mit einem mehrschichtigen Memory-System, das über Zeit lernt.</p>
+            </div>
+            <div class="memory-visual reveal">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/chat.png" alt="Chat" loading="lazy">
+                </div>
+                <div class="memory-list">
+                    <div class="memory-item reveal">
+                        <div class="mi-icon">&#128172;</div>
+                        <div>
+                            <h4 data-i18n="memory.st.title">Short-Term Memory</h4>
+                            <p data-i18n="memory.st.desc">Konversationshistorie mit SQLite Sliding Window. Kontext bleibt erhalten.</p>
+                        </div>
+                    </div>
+                    <div class="memory-item reveal">
+                        <div class="mi-icon">&#128269;</div>
+                        <div>
+                            <h4 data-i18n="memory.lt.title">Long-Term RAG</h4>
+                            <p data-i18n="memory.lt.desc">Semantische Suche über alle vergangenen Konversationen via eingebetteter Vector DB (chromem-go).</p>
+                        </div>
+                    </div>
+                    <div class="memory-item reveal">
+                        <div class="mi-icon">&#127760;</div>
+                        <div>
+                            <h4 data-i18n="memory.kg.title">Knowledge Graph</h4>
+                            <p data-i18n="memory.kg.desc">Strukturierte Fakten mit Entitätsbeziehungen. Verknüpft Informationen intelligent.</p>
+                        </div>
+                    </div>
+                    <div class="memory-item reveal">
+                        <div class="mi-icon">&#128193;</div>
+                        <div>
+                            <h4 data-i18n="memory.core.title">Core Memory &amp; Journal</h4>
+                            <p data-i18n="memory.core.desc">Permanente Fakten, die immer im Kontext bleiben. Chronologisches Event-Log mit Importance Scoring.</p>
+                        </div>
+                    </div>
+                    <div class="memory-item reveal">
+                        <div class="mi-icon">&#128161;</div>
+                        <div>
+                            <h4 data-i18n="memory.smart.title">Smart Features</h4>
+                            <p data-i18n="memory.smart.desc">Memory Analysis extrahiert in Echtzeit Fakten. Nightly Consolidation archiviert alte Chats. Weekly Reflection erkennt Muster.</p>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+
+    <!-- ===== Requirements ===== -->
+    <section id="requirements" class="req-section">
+        <div class="container">
+            <div class="section-header center reveal">
+                <h2 data-i18n="req.title">Was du <em>brauchst</em></h2>
+                <p data-i18n="req.subtitle">AuraGo läuft auf fast allem, vom Raspberry Pi bis zum Homeserver.</p>
+            </div>
+            <div class="req-grid">
+                <div class="req-card reveal">
+                    <div class="req-badge" data-i18n="req.min.badge">Minimal</div>
+                    <h3 data-i18n="req.min.title">Raspberry Pi</h3>
+                    <div class="req-specs">
+                        <div class="req-spec"><span class="req-spec-icon">&#128187;</span><span data-i18n="req.min.cpu">Dual Core CPU</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">&#128163;</span><span data-i18n="req.min.ram"><strong>2 GB</strong> RAM</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">&#128190;</span><span data-i18n="req.min.storage"><strong>5 GB</strong> Storage</span></div>
+                    </div>
+                </div>
+                <div class="req-card recommended reveal">
+                    <div class="req-badge" data-i18n="req.rec.badge">Empfohlen</div>
+                    <h3 data-i18n="req.rec.title">Homeserver</h3>
+                    <div class="req-specs">
+                        <div class="req-spec"><span class="req-spec-icon">&#128187;</span><span data-i18n="req.rec.cpu">Quad Core CPU</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">&#128163;</span><span data-i18n="req.rec.ram"><strong>4 GB</strong> RAM</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">&#128190;</span><span data-i18n="req.rec.storage"><strong>20 GB</strong> Storage</span></div>
+                    </div>
+                </div>
+                <div class="req-card reveal">
+                    <div class="req-badge" data-i18n="req.perf.badge">Perfekt</div>
+                    <h3 data-i18n="req.perf.title">Powerhouse</h3>
+                    <div class="req-specs">
+                        <div class="req-spec"><span class="req-spec-icon">&#128187;</span><span data-i18n="req.perf.cpu">Quad Core CPU</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">&#128163;</span><span data-i18n="req.perf.ram"><strong>8 GB</strong> RAM</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">&#128190;</span><span data-i18n="req.perf.storage"><strong>100 GB</strong> Storage</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" class="install-section">
+        <div class="container">
+            <div class="section-header center reveal">
+                <h2 data-i18n="install.title">In <em>Sekunden</em> startklar</h2>
+                <p data-i18n="install.subtitle">Wähle deinen Installationspfad: One-Liner, Docker Compose oder Build from Source.</p>
+            </div>
+            <div class="reveal">
+                <div class="install-tabs">
+                    <button class="install-tab active" data-tab="curl" data-i18n="install.tab1">One-Liner</button>
+                    <button class="install-tab" data-tab="docker" data-i18n="install.tab2">Docker Compose</button>
+                    <button class="install-tab" data-tab="source" data-i18n="install.tab3">Build from Source</button>
+                </div>
+                <div class="install-panel active" id="panel-curl">
+                    <div class="code-block">
+                        <div class="cb-header">
+                            <span class="cb-filename">terminal</span>
+                            <button class="copy-btn" data-code="curl -fsSL https://raw.githubusercontent.com/antibyte/AuraGo/main/install.sh | bash">Copy</button>
+                        </div>
+                        <pre><span class="c"># One-Liner Installation (empfohlen)</span>
+<span class="c"># Setzt Docker, HTTPS und systemd automatisch auf</span>
+curl -fsSL https://raw.githubusercontent.com/antibyte/AuraGo/main/install.sh | bash
+
+<span class="c"># Danach:</span>
+cd ~/aurago
+source .env
+./start.sh
+
+<span class="c"># Öffne http://localhost:8088</span></pre>
+                    </div>
+                </div>
+                <div class="install-panel" id="panel-docker">
+                    <div class="code-block">
+                        <div class="cb-header">
+                            <span class="cb-filename">docker-compose.yml</span>
+                            <button class="copy-btn" data-code="services:
+  aurago:
+    image: ghcr.io/antibyte/aurago:latest
+    ports:
+      - &quot;8088:8088&quot;
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml
+      - ./secrets:/run/optional-secrets:ro">Copy</button>
+                        </div>
+                        <pre><span class="k">services</span>:
+  <span class="n">aurago</span>:
+    <span class="k">image</span>: <span class="s">ghcr.io/antibyte/aurago:latest</span>
+    <span class="k">ports</span>:
+      - <span class="s">&quot;8088:8088&quot;</span>
+    <span class="k">volumes</span>:
+      - <span class="s">./data:/app/data</span>
+      - <span class="s">./config.yaml:/app/config.yaml</span>
+      - <span class="s">./secrets:/run/optional-secrets:ro</span></pre>
+                    </div>
+                </div>
+                <div class="install-panel" id="panel-source">
+                    <div class="code-block">
+                        <div class="cb-header">
+                            <span class="cb-filename">terminal</span>
+                            <button class="copy-btn" data-code="git clone https://github.com/antibyte/AuraGo.git
+cd AuraGo
+go build -o aurago ./cmd/aurago
+./aurago">Copy</button>
+                        </div>
+                        <pre>git clone https://github.com/antibyte/AuraGo.git
+cd AuraGo
+go build -o aurago ./cmd/aurago
+./aurago</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header center reveal">
+                <div class="eyebrow"><span>FAQ</span></div>
+                <h2 data-i18n="faq.title">Häufige <em>Fragen</em></h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item reveal">
+                    <button class="faq-q"><span data-i18n="faq.q1">Was ist AuraGo?</span> <span class="faq-arrow">&#9662;</span></button>
+                    <div class="faq-a"><p data-i18n="faq.a1">AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Er läuft als Single Binary mit zero Dependencies auf jedem Linux-Server oder Raspberry Pi. Er hat direkten Zugriff auf deine Infrastruktur, hält alle Daten lokal und arbeitet 24/7 für dich, on demand oder automatisiert.</p></div>
+                </div>
+                <div class="faq-item reveal">
+                    <button class="faq-q"><span data-i18n="faq.q2">Kann ich lokale Modelle nutzen?</span> <span class="faq-arrow">&#9662;</span></button>
+                    <div class="faq-a"><p data-i18n="faq.a2">Ja. AuraGo unterstützt Ollama out of the box für lokale Modelle wie Llama 3, Mistral und andere. Du kannst auch beliebige OpenAI-kompatible APIs oder OpenRouter nutzen.</p></div>
+                </div>
+                <div class="faq-item reveal">
+                    <button class="faq-q"><span data-i18n="faq.q3">Ist AuraGo produktionsreif?</span> <span class="faq-arrow">&#9662;</span></button>
+                    <div class="faq-a"><p data-i18n="faq.a3">AuraGo ist unter aktiver Entwicklung. Viele Features sind bereits stabil und werden produktiv genutzt. Es gibt gelegentlich Breaking Changes. Windows- und macOS-Support ist theoretisch vorhanden, aber nicht getestet.</p></div>
+                </div>
+                <div class="faq-item reveal">
+                    <button class="faq-q"><span data-i18n="faq.q4">Wie sicher ist AuraGo?</span> <span class="faq-arrow">&#9662;</span></button>
+                    <div class="faq-a"><p data-i18n="faq.a4">AuraGo wurde Security-First entwickelt: AES-256-GCM Vault für API-Keys, bcrypt + TOTP 2FA, Sandbox für Python-Execution, HTTPS mit Auto-TLS, LLM Guardian für Tool-Call-Scanning und granularer Danger Zone mit individuellen Toggles.</p></div>
+                </div>
+                <div class="faq-item reveal">
+                    <button class="faq-q"><span data-i18n="faq.q5">Wie kann ich mitmachen?</span> <span class="faq-arrow">&#9662;</span></button>
+                    <div class="faq-a"><p data-i18n="faq.a5">Schau auf <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a> vorbei. Issues, PRs und Diskussionen sind willkommen. Das Projekt ist ein One-Man-Projekt. Jede Hilfe zählt.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" alt="AuraGo" loading="lazy">
+                        <span>Aura<span>Go</span></span>
+                    </div>
+                    <p data-i18n="footer.brand">Dein Home Lab AI Agent. Single binary, zero dependencies, läuft auf deiner Hardware. Open Source unter MIT License.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.col1">Produkt</h4>
+                    <ul>
+                        <li><a href="#features" data-i18n="nav.features">Features</a></li>
+                        <li><a href="#gallery" data-i18n="nav.screenshots">Screenshots</a></li>
+                        <li><a href="#tools" data-i18n="nav.tools">Tools</a></li>
+                        <li><a href="#memory" data-i18n="nav.memory">Memory</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.col2">Ressourcen</h4>
+                    <ul>
+                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manual/de/README.md" target="_blank" rel="noopener" data-i18n="footer.res1">Deutsches Handbuch</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manual/en/README.md" target="_blank" rel="noopener" data-i18n="footer.res2">English Manual</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/configuration.md" target="_blank" rel="noopener" data-i18n="footer.res3">Konfiguration</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/architecture.md" target="_blank" rel="noopener" data-i18n="footer.res4">Architektur</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.col3">Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/issues" target="_blank" rel="noopener" data-i18n="footer.comm2">Issues</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/discussions" target="_blank" rel="noopener" data-i18n="footer.comm3">Diskussionen</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 AuraGo Project. Released under MIT License.</p>
-                <p>Made with <i class="fas fa-heart"></i> by the AuraGo community</p>
+                <p>&copy; 2026 AuraGo Project. MIT License.</p>
+                <p><span data-i18n="footer.by">Ein Projekt von</span> <a href="https://github.com/antibyte" target="_blank" rel="noopener" style="color:var(--accent)">antibyte</a></p>
             </div>
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script>
+    const i18n = {
+        de: {
+            'meta.title': 'AuraGo - Dein Home Lab AI Agent',
+            'meta.desc': 'AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Single Binary, zero dependencies, läuft auf jedem Linux-Server oder Raspberry Pi.',
+            'nav.features': 'Features',
+            'nav.screenshots': 'Screenshots',
+            'nav.tools': 'Tools',
+            'nav.memory': 'Memory',
+            'nav.install': 'Install',
+            'nav.faq': 'FAQ',
+            'nav.github': 'GitHub',
+            'hero.eyebrow': 'Open Source \u00b7 Self-Hosted',
+            'hero.title': 'Dein <em>Home Lab AI Agent</em> - single binary, zero dependencies',
+            'hero.desc': 'AuraGo läuft auf deiner Hardware mit direktem Zugriff auf deine Infrastruktur. Alle Daten bleiben lokal, 24/7.',
+            'hero.wip': 'Work in Progress',
+            'hero.cta1': 'Jetzt installieren',
+            'hero.cta2': 'Auf GitHub ansehen',
+            'features.eyebrow': 'Was AuraGo kann',
+            'features.title': 'Alles, was ein <em>AI Agent</em> braucht',
+            'features.subtitle': '100+ integrierte Tools, ein leistungsfähiges Memory-System, Security-First-Architektur und eine vollständige Web-Oberfläche.',
+            'features.personality': 'Lernt deine Präferenzen, deinen Tech-Stack und Kommunikationsstil kennen. Passt sich über Zeit an dich an und entwickelt eine eigene Persönlichkeit.',
+            'features.guardian': 'AI-gestützter Security-Scanner überwacht jeden Tool-Call und externen Content auf Bedrohungen. Bevor etwas passiert.',
+            'features.adaptive': 'Intelligente Filterung von 100+ Tools basierend auf dem Gesprächskontext. Spart Tokens, verbessert Genauigkeit.',
+            'features.vault': 'Alle Secrets mit AES-256-GCM verschlüsselt. Kein Zugriff durch den Agenten. Web UI mit bcrypt-Passwörtern und TOTP 2FA. Granulare Danger-Zone-Toggles für Shell, Python, Filesystem, Network und Self-Update.',
+            'features.pwa': 'Als Progressive Web App installierbar. Sprachsteuerung und TTS für ein natives Mobile-Erlebnis. Verschiedene Chat-Themes: Cyberwar, Retro CRT, Dark Sun, Lollipop.',
+            'features.media': 'Erstelle Bilder, Musik und kurze Videos. PDF-Generierung für Rechnungen und Berichte. Dokumenten-Extraktion mit LLM-Zusammenfassung.',
+            'features.fncall': 'OpenAI-kompatible Tool-Calls mit Auto-Detection für viele Modelle. Unterstützung für OpenAI, Anthropic, Ollama und alle OpenAI-kompatiblen APIs.',
+            'gallery.eyebrow': 'Im Einsatz',
+            'gallery.title': 'So sieht <em>AuraGo</em> aus',
+            'gallery.subtitle': 'Dashboard, Chat, Container-Management, Konfiguration und Themes - alles aus dem Browser.',
+            'gallery.dashboard': 'Dashboard',
+            'gallery.chat': 'Chat',
+            'gallery.containers': 'Container Management',
+            'gallery.config': 'Konfiguration',
+            'gallery.desktop': 'Virtual Desktop im Browser',
+            'themes.eyebrow': 'Look & Feel',
+            'themes.title': 'Wähle dein <em>Theme</em>',
+            'themes.subtitle': 'Von Cyberwar über Retro CRT bis Lollipop - finde deinen Stil.',
+            'tools.eyebrow': '100+ Built-in Tools',
+            'tools.title': 'Verbinde <em>alles</em> - aus der Box',
+            'tools.subtitle': 'Von Home Assistant über Docker bis zu Google Workspace. Keine shady Skills aus dem Internet nötig.',
+            'tools.home': 'Home Lab',
+            'tools.system': 'System',
+            'tools.cloud': 'Cloud',
+            'tools.comm': 'Communication',
+            'tools.dev': 'Dev & Media',
+            'tools.gen': 'Generative',
+            'tools.net': 'Network',
+            'tools.incoming': 'Incoming',
+            'tools.hl1': 'Docker & Compose',
+            'tools.hl2': 'Proxmox VMs / LXC',
+            'tools.hl3': 'Home Assistant',
+            'tools.hl4': 'TrueNAS / ZFS',
+            'tools.hl5': 'Wake-on-LAN',
+            'tools.hl6': 'AdGuard Home',
+            'tools.hl7': 'Fritz!Box TR-064',
+            'tools.sy1': 'Shell & Python Sandbox',
+            'tools.sy2': 'SSH Inventory',
+            'tools.sy3': 'Ansible Playbooks',
+            'tools.sy4': 'Cron / Missions',
+            'tools.sy5': 'Tailscale VPN',
+            'tools.sy6': 'Firewall Monitor',
+            'tools.cl1': 'Google Workspace',
+            'tools.cl2': 'GitHub Repos / Issues',
+            'tools.cl3': 'S3 / MinIO / Wasabi',
+            'tools.cl4': 'OneDrive (Graph API)',
+            'tools.cl5': 'Netlify Deploy',
+            'tools.cl6': 'Cloudflare Tunnel',
+            'tools.cl7': 'WebDAV / Koofr',
+            'tools.co1': 'Telegram Bot',
+            'tools.co2': 'Discord Integration',
+            'tools.co3': 'Rocket.Chat',
+            'tools.co4': 'Email IMAP + SMTP',
+            'tools.co5': 'Telnyx SMS/Voice',
+            'tools.co6': 'Pushover / ntfy',
+            'tools.dv1': 'Git Operations',
+            'tools.dv2': 'DuckDuckGo / Brave Search',
+            'tools.dv3': 'VirusTotal Scan',
+            'tools.dv4': 'Vision (Bildanalyse)',
+            'tools.dv5': 'TTS (Google, ElevenLabs, Piper)',
+            'tools.dv6': 'Whisper Transcription',
+            'tools.gn1': 'Image Generation',
+            'tools.gn2': 'Music & Video Gen',
+            'tools.gn3': 'Media Registry',
+            'tools.gn4': 'PDF Creator (maroto)',
+            'tools.gn5': 'Chromecast',
+            'tools.gn6': 'Web Screenshots',
+            'tools.nt1': 'Ping & Port Scan',
+            'tools.nt2': 'mDNS / UPnP Discovery',
+            'tools.nt3': 'Web Capture',
+            'tools.nt4': 'SQL (PostgreSQL, MySQL, SQLite)',
+            'tools.nt5': 'Outgoing Webhooks',
+            'tools.nt6': 'Incoming Webhooks',
+            'tools.ic1': 'GitHub Webhooks',
+            'tools.ic2': 'Alertmanager',
+            'tools.ic3': 'Home Assistant Events',
+            'tools.ic4': 'MeshCentral RMM',
+            'tools.ic5': 'Homepage Dashboard',
+            'memory.eyebrow': 'Memory System',
+            'memory.title': 'Er erinnert sich. <em>Wirklich.</em>',
+            'memory.subtitle': 'AuraGo plaudert nicht nur, es behält. Mit einem mehrschichtigen Memory-System, das über Zeit lernt.',
+            'memory.st.title': 'Short-Term Memory',
+            'memory.st.desc': 'Konversationshistorie mit SQLite Sliding Window. Kontext bleibt erhalten.',
+            'memory.lt.title': 'Long-Term RAG',
+            'memory.lt.desc': 'Semantische Suche über alle vergangenen Konversationen via eingebetteter Vector DB (chromem-go).',
+            'memory.kg.title': 'Knowledge Graph',
+            'memory.kg.desc': 'Strukturierte Fakten mit Entitätsbeziehungen. Verknüpft Informationen intelligent.',
+            'memory.core.title': 'Core Memory & Journal',
+            'memory.core.desc': 'Permanente Fakten, die immer im Kontext bleiben. Chronologisches Event-Log mit Importance Scoring.',
+            'memory.smart.title': 'Smart Features',
+            'memory.smart.desc': 'Memory Analysis extrahiert in Echtzeit Fakten. Nightly Consolidation archiviert alte Chats. Weekly Reflection erkennt Muster.',
+            'install.eyebrow': 'Schnellstart',
+            'install.title': 'In <em>Sekunden</em> startklar',
+            'install.subtitle': 'Wähle deinen Installationspfad: One-Liner, Docker Compose oder Build from Source.',
+            'install.tab1': 'One-Liner',
+            'install.tab2': 'Docker Compose',
+            'install.tab3': 'Build from Source',
+            'req.eyebrow': 'System',
+            'req.title': 'Was du <em>brauchst</em>',
+            'req.subtitle': 'AuraGo läuft auf fast allem, vom Raspberry Pi bis zum Homeserver.',
+            'req.min.badge': 'Minimal',
+            'req.min.title': 'Raspberry Pi',
+            'req.min.cpu': 'Dual Core CPU',
+            'req.min.ram': '<strong>2 GB</strong> RAM',
+            'req.min.storage': '<strong>5 GB</strong> Storage',
+            'req.rec.badge': 'Empfohlen',
+            'req.rec.title': 'Homeserver',
+            'req.rec.cpu': 'Quad Core CPU',
+            'req.rec.ram': '<strong>4 GB</strong> RAM',
+            'req.rec.storage': '<strong>20 GB</strong> Storage',
+            'req.perf.badge': 'Perfekt',
+            'req.perf.title': 'Powerhouse',
+            'req.perf.cpu': 'Quad Core CPU',
+            'req.perf.ram': '<strong>8 GB</strong> RAM',
+            'req.perf.storage': '<strong>100 GB</strong> Storage',
+            'faq.title': 'Häufige <em>Fragen</em>',
+            'faq.q1': 'Was ist AuraGo?',
+            'faq.a1': 'AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Er läuft als Single Binary mit zero Dependencies auf jedem Linux-Server oder Raspberry Pi. Er hat direkten Zugriff auf deine Infrastruktur, hält alle Daten lokal und arbeitet 24/7 für dich, on demand oder automatisiert.',
+            'faq.q2': 'Kann ich lokale Modelle nutzen?',
+            'faq.a2': 'Ja. AuraGo unterstützt Ollama out of the box für lokale Modelle wie Llama 3, Mistral und andere. Du kannst auch beliebige OpenAI-kompatible APIs oder OpenRouter nutzen.',
+            'faq.q3': 'Ist AuraGo produktionsreif?',
+            'faq.a3': 'AuraGo ist unter aktiver Entwicklung. Viele Features sind bereits stabil und werden produktiv genutzt. Es gibt gelegentlich Breaking Changes. Windows- und macOS-Support ist theoretisch vorhanden, aber nicht getestet.',
+            'faq.q4': 'Wie sicher ist AuraGo?',
+            'faq.a4': 'AuraGo wurde Security-First entwickelt: AES-256-GCM Vault für API-Keys, bcrypt + TOTP 2FA, Sandbox für Python-Execution, HTTPS mit Auto-TLS, LLM Guardian für Tool-Call-Scanning und granularer Danger Zone mit individuellen Toggles.',
+            'faq.q5': 'Wie kann ich mitmachen?',
+            'faq.a5': 'Schau auf <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a> vorbei. Issues, PRs und Diskussionen sind willkommen. Das Projekt ist ein One-Man-Projekt. Jede Hilfe zählt.',
+            'footer.brand': 'Dein Home Lab AI Agent. Single binary, zero dependencies, läuft auf deiner Hardware. Open Source unter MIT License.',
+            'footer.col1': 'Produkt',
+            'footer.col2': 'Ressourcen',
+            'footer.col3': 'Community',
+            'footer.res1': 'Deutsches Handbuch',
+            'footer.res2': 'English Manual',
+            'footer.res3': 'Konfiguration',
+            'footer.res4': 'Architektur',
+            'footer.comm2': 'Issues',
+            'footer.comm3': 'Diskussionen',
+            'footer.by': 'Ein Projekt von',
+            'skipLink': 'Zum Inhalt springen',
+        },
+        en: {
+            'meta.title': 'AuraGo - Your Home Lab AI Agent',
+            'meta.desc': 'AuraGo is a self-hosted AI agent for home labs. Single binary, zero dependencies, runs on any Linux server or Raspberry Pi.',
+            'nav.features': 'Features',
+            'nav.screenshots': 'Screenshots',
+            'nav.tools': 'Tools',
+            'nav.memory': 'Memory',
+            'nav.install': 'Install',
+            'nav.faq': 'FAQ',
+            'nav.github': 'GitHub',
+            'hero.eyebrow': 'Open Source \u00b7 Self-Hosted',
+            'hero.title': 'Your <em>Home Lab AI Agent</em> - single binary, zero dependencies',
+            'hero.desc': 'AuraGo runs on your hardware with direct access to your infrastructure. All data stays local, 24/7.',
+            'hero.wip': 'Work in Progress',
+            'hero.cta1': 'Install now',
+            'hero.cta2': 'View on GitHub',
+            'features.eyebrow': 'What AuraGo can do',
+            'features.title': 'Everything an <em>AI Agent</em> needs',
+            'features.subtitle': '100+ built-in tools, a powerful memory system, security-first architecture and a complete web interface.',
+            'features.personality': 'Learns your preferences, tech stack and communication style. Adapts to you over time and develops its own personality.',
+            'features.guardian': 'AI-powered security scanner monitors every tool call and external content for threats. Before anything happens.',
+            'features.adaptive': 'Intelligent filtering of 100+ tools based on conversation context. Saves tokens, improves accuracy.',
+            'features.vault': 'All secrets encrypted with AES-256-GCM. No access by the agent. Web UI with bcrypt passwords and TOTP 2FA. Granular Danger Zone toggles for Shell, Python, Filesystem, Network and Self-Update.',
+            'features.pwa': 'Installable as Progressive Web App. Voice control and TTS for a native mobile experience. Chat themes: Cyberwar, Retro CRT, Dark Sun, Lollipop.',
+            'features.media': 'Generate images, music and short videos. PDF generation for invoices and reports. Document extraction with LLM summarization.',
+            'features.fncall': 'OpenAI-compatible tool calls with auto-detection for many models. Support for OpenAI, Anthropic, Ollama and all OpenAI-compatible APIs.',
+            'gallery.eyebrow': 'In Action',
+            'gallery.title': 'This is <em>AuraGo</em>',
+            'gallery.subtitle': 'Dashboard, Chat, Container Management, Configuration and Themes - all from the browser.',
+            'gallery.dashboard': 'Dashboard',
+            'gallery.chat': 'Chat',
+            'gallery.containers': 'Container Management',
+            'gallery.config': 'Configuration',
+            'gallery.desktop': 'Virtual Desktop in Browser',
+            'themes.eyebrow': 'Look & Feel',
+            'themes.title': 'Pick your <em>Theme</em>',
+            'themes.subtitle': 'From Cyberwar to Retro CRT to Lollipop - find your style.',
+            'tools.eyebrow': '100+ Built-in Tools',
+            'tools.title': 'Connect <em>everything</em> - out of the box',
+            'tools.subtitle': 'From Home Assistant to Docker to Google Workspace. No shady internet skills needed.',
+            'tools.home': 'Home Lab',
+            'tools.system': 'System',
+            'tools.cloud': 'Cloud',
+            'tools.comm': 'Communication',
+            'tools.dev': 'Dev & Media',
+            'tools.gen': 'Generative',
+            'tools.net': 'Network',
+            'tools.incoming': 'Incoming',
+            'tools.hl1': 'Docker & Compose',
+            'tools.hl2': 'Proxmox VMs / LXC',
+            'tools.hl3': 'Home Assistant',
+            'tools.hl4': 'TrueNAS / ZFS',
+            'tools.hl5': 'Wake-on-LAN',
+            'tools.hl6': 'AdGuard Home',
+            'tools.hl7': 'Fritz!Box TR-064',
+            'tools.sy1': 'Shell & Python Sandbox',
+            'tools.sy2': 'SSH Inventory',
+            'tools.sy3': 'Ansible Playbooks',
+            'tools.sy4': 'Cron / Missions',
+            'tools.sy5': 'Tailscale VPN',
+            'tools.sy6': 'Firewall Monitor',
+            'tools.cl1': 'Google Workspace',
+            'tools.cl2': 'GitHub Repos / Issues',
+            'tools.cl3': 'S3 / MinIO / Wasabi',
+            'tools.cl4': 'OneDrive (Graph API)',
+            'tools.cl5': 'Netlify Deploy',
+            'tools.cl6': 'Cloudflare Tunnel',
+            'tools.cl7': 'WebDAV / Koofr',
+            'tools.co1': 'Telegram Bot',
+            'tools.co2': 'Discord Integration',
+            'tools.co3': 'Rocket.Chat',
+            'tools.co4': 'Email IMAP + SMTP',
+            'tools.co5': 'Telnyx SMS/Voice',
+            'tools.co6': 'Pushover / ntfy',
+            'tools.dv1': 'Git Operations',
+            'tools.dv2': 'DuckDuckGo / Brave Search',
+            'tools.dv3': 'VirusTotal Scan',
+            'tools.dv4': 'Vision (Image Analysis)',
+            'tools.dv5': 'TTS (Google, ElevenLabs, Piper)',
+            'tools.dv6': 'Whisper Transcription',
+            'tools.gn1': 'Image Generation',
+            'tools.gn2': 'Music & Video Gen',
+            'tools.gn3': 'Media Registry',
+            'tools.gn4': 'PDF Creator (maroto)',
+            'tools.gn5': 'Chromecast',
+            'tools.gn6': 'Web Screenshots',
+            'tools.nt1': 'Ping & Port Scan',
+            'tools.nt2': 'mDNS / UPnP Discovery',
+            'tools.nt3': 'Web Capture',
+            'tools.nt4': 'SQL (PostgreSQL, MySQL, SQLite)',
+            'tools.nt5': 'Outgoing Webhooks',
+            'tools.nt6': 'Incoming Webhooks',
+            'tools.ic1': 'GitHub Webhooks',
+            'tools.ic2': 'Alertmanager',
+            'tools.ic3': 'Home Assistant Events',
+            'tools.ic4': 'MeshCentral RMM',
+            'tools.ic5': 'Homepage Dashboard',
+            'memory.eyebrow': 'Memory System',
+            'memory.title': 'It remembers. <em>Really.</em>',
+            'memory.subtitle': 'AuraGo doesn\'t just chat, it retains. With a multi-layered memory system that learns over time.',
+            'memory.st.title': 'Short-Term Memory',
+            'memory.st.desc': 'Conversation history with SQLite sliding window. Context is preserved.',
+            'memory.lt.title': 'Long-Term RAG',
+            'memory.lt.desc': 'Semantic search across all past conversations via embedded vector DB (chromem-go).',
+            'memory.kg.title': 'Knowledge Graph',
+            'memory.kg.desc': 'Structured facts with entity relationships. Intelligently connects information.',
+            'memory.core.title': 'Core Memory & Journal',
+            'memory.core.desc': 'Permanent facts that always stay in context. Chronological event log with importance scoring.',
+            'memory.smart.title': 'Smart Features',
+            'memory.smart.desc': 'Memory Analysis extracts facts in real time. Nightly Consolidation archives old chats. Weekly Reflection recognizes patterns.',
+            'install.eyebrow': 'Quick Start',
+            'install.title': 'Ready in <em>seconds</em>',
+            'install.subtitle': 'Choose your installation path: One-Liner, Docker Compose or Build from Source.',
+            'install.tab1': 'One-Liner',
+            'install.tab2': 'Docker Compose',
+            'install.tab3': 'Build from Source',
+            'req.eyebrow': 'System',
+            'req.title': 'What you <em>need</em>',
+            'req.subtitle': 'AuraGo runs on almost anything, from Raspberry Pi to home server.',
+            'req.min.badge': 'Minimal',
+            'req.min.title': 'Raspberry Pi',
+            'req.min.cpu': 'Dual Core CPU',
+            'req.min.ram': '<strong>2 GB</strong> RAM',
+            'req.min.storage': '<strong>5 GB</strong> Storage',
+            'req.rec.badge': 'Recommended',
+            'req.rec.title': 'Home Server',
+            'req.rec.cpu': 'Quad Core CPU',
+            'req.rec.ram': '<strong>4 GB</strong> RAM',
+            'req.rec.storage': '<strong>20 GB</strong> Storage',
+            'req.perf.badge': 'Perfect',
+            'req.perf.title': 'Powerhouse',
+            'req.perf.cpu': 'Quad Core CPU',
+            'req.perf.ram': '<strong>8 GB</strong> RAM',
+            'req.perf.storage': '<strong>100 GB</strong> Storage',
+            'faq.title': 'Frequently Asked <em>Questions</em>',
+            'faq.q1': 'What is AuraGo?',
+            'faq.a1': 'AuraGo is a self-hosted AI agent for home labs. It runs as a single binary with zero dependencies on any Linux server or Raspberry Pi. It has direct access to your infrastructure, keeps all data local and works 24/7 for you, on demand or automated.',
+            'faq.q2': 'Can I use local models?',
+            'faq.a2': 'Yes. AuraGo supports Ollama out of the box for local models like Llama 3, Mistral and others. You can also use any OpenAI-compatible API or OpenRouter.',
+            'faq.q3': 'Is AuraGo production-ready?',
+            'faq.a3': 'AuraGo is under active development. Many features are already stable and used in production. There are occasional breaking changes. Windows and macOS support is built in in theory, but not tested.',
+            'faq.q4': 'How secure is AuraGo?',
+            'faq.a4': 'AuraGo was designed security-first: AES-256-GCM Vault for API keys, bcrypt + TOTP 2FA, Sandbox for Python execution, HTTPS with Auto-TLS, LLM Guardian for tool-call scanning and granular Danger Zone with individual toggles.',
+            'faq.q5': 'How can I contribute?',
+            'faq.a5': 'Head over to <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a>. Issues, PRs and discussions are welcome. This is a one-man project. Every bit helps.',
+            'footer.brand': 'Your Home Lab AI Agent. Single binary, zero dependencies, runs on your hardware. Open Source under MIT License.',
+            'footer.col1': 'Product',
+            'footer.col2': 'Resources',
+            'footer.col3': 'Community',
+            'footer.res1': 'German Manual',
+            'footer.res2': 'English Manual',
+            'footer.res3': 'Configuration',
+            'footer.res4': 'Architecture',
+            'footer.comm2': 'Issues',
+            'footer.comm3': 'Discussions',
+            'footer.by': 'A project by',
+            'skipLink': 'Skip to content',
+        }
+    };
+
+    let currentLang = localStorage.getItem('aurago-lang') || 'de';
+
+    function applyLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('aurago-lang', lang);
+        document.documentElement.lang = lang;
+
+        // Update switch buttons
+        document.querySelectorAll('.lang-switch button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        // Update all data-i18n elements
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            const text = i18n[lang][key];
+            if (text !== undefined) {
+                if (el.tagName === 'TITLE') {
+                    document.title = text;
+                } else if (el.hasAttribute('data-i18n-attr')) {
+                    el.setAttribute(el.dataset.i18nAttr, text);
+                } else {
+                    el.innerHTML = text;
+                }
+            }
+        });
+    }
+
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+        btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+    });
+
+    // ===== Navbar scroll (IntersectionObserver, no scroll listener) =====
+    const navbar = document.getElementById('navbar');
+    const navSentinel = document.getElementById('nav-sentinel');
+    const navScrollObserver = new IntersectionObserver(([entry]) => {
+        navbar.classList.toggle('scrolled', !entry.isIntersecting);
+    }, { threshold: 0 });
+    navScrollObserver.observe(navSentinel);
+
+    // ===== Mobile menu =====
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+    mobileBtn.addEventListener('click', () => {
+        const open = navLinks.classList.toggle('nav-open');
+        mobileBtn.innerHTML = open ? '\u2715' : '\u2630';
+        mobileBtn.setAttribute('aria-expanded', open);
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        navLinks.classList.remove('nav-open');
+        mobileBtn.innerHTML = '\u2630';
+        mobileBtn.setAttribute('aria-expanded', 'false');
+    }));
+
+    // ===== Install tabs =====
+    document.querySelectorAll('.install-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.install-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ===== FAQ accordion =====
+    document.querySelectorAll('.faq-q').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.faq-item');
+            const open = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+            if (!open) item.classList.add('open');
+        });
+    });
+
+    // ===== Copy to clipboard =====
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const code = btn.dataset.code;
+            try {
+                await navigator.clipboard.writeText(code);
+                btn.textContent = 'Copied';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+            } catch {
+                btn.textContent = 'Failed';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            }
+        });
+    });
+
+    // ===== Scroll reveal =====
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+        el.style.transitionDelay = `${i % 5 * 80}ms`;
+        observer.observe(el);
+    });
+
+    // ===== Smooth anchor scroll =====
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const id = a.getAttribute('href');
+            if (id === '#') return;
+            const target = document.querySelector(id);
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        });
+    });
+
+    // ===== Scrollspy: active nav link =====
+    const sections = ['home', 'features', 'gallery', 'tools', 'memory', 'install', 'faq'];
+    const navLinksAll = document.querySelectorAll('.nav-links a[href^="#"]');
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navLinksAll.forEach(a => a.classList.toggle('nav-active', a.getAttribute('href') === '#' + id));
+            }
+        });
+    }, { threshold: 0.25, rootMargin: '-80px 0px -60% 0px' });
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) sectionObserver.observe(el);
+    });
+
+    // Apply initial language
+    applyLang(currentLang);
+    </script>
 </body>
 </html>
