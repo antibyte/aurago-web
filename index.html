@@ -615,6 +615,23 @@
         .code-block pre .s { color: #7ec699; }
         .code-block pre .n { color: #d19a66; }
 
+        /* ===== Companion App ===== */
+        .companion-section { padding: 5rem 0; }
+        .companion-cta {
+            display: flex; gap: 0.8rem; flex-wrap: wrap;
+            justify-content: center; margin-top: 2rem;
+        }
+        .companion-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.25rem 0.65rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.68rem; font-weight: 500;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
         /* ===== FAQ ===== */
         .faq-section { background: var(--bg-elevated); border-top: 1px solid var(--border); }
         .faq-list { max-width: 720px; margin: 0 auto; }
@@ -748,6 +765,7 @@
             <li><a href="#tools" data-i18n="nav.tools">Tools</a></li>
             <li><a href="#memory" data-i18n="nav.memory">Memory</a></li>
             <li><a href="#install" data-i18n="nav.install">Install</a></li>
+            <li><a href="#companion" data-i18n="nav.companion">agodesk</a></li>
             <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
             <li><a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener" data-i18n="nav.github">GitHub</a></li>
         </ul>
@@ -1157,6 +1175,27 @@ go build -o aurago ./cmd/aurago
         </div>
     </section>
 
+    <section id="companion" class="companion-section">
+        <div class="container">
+            <div class="section-header center reveal">
+                <h2 data-i18n="companion.title"><em>agodesk</em> Companion App</h2>
+                <p data-i18n="companion.subtitle">Der plattformunabhängige Desktop-Client für AuraGo. Windows, Linux — verbindet sich per WebSocket, kein Browser nötig.</p>
+            </div>
+            <div class="companion-cta reveal">
+                <a href="https://github.com/antibyte/agodesk/releases" target="_blank" rel="noopener" class="btn btn-primary"><span data-i18n="companion.cta">Downloads &amp; Releases</span> <span class="btn-arrow">&#8594;</span></a>
+                <a href="https://github.com/antibyte/agodesk" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="companion.source">Quellcode auf GitHub</a>
+            </div>
+            <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:1.25rem;flex-wrap:wrap">
+                <span class="companion-badge">Windows .exe</span>
+                <span class="companion-badge">Windows .msi</span>
+                <span class="companion-badge">Linux .deb</span>
+                <span class="companion-badge">Linux .AppImage</span>
+                <span class="companion-badge">Linux .rpm</span>
+                <span class="companion-badge">Tauri + Svelte + Rust</span>
+            </div>
+        </div>
+    </section>
+
     <section id="faq" class="faq-section">
         <div class="container">
             <div class="section-header center reveal">
@@ -1242,6 +1281,7 @@ go build -o aurago ./cmd/aurago
             'nav.tools': 'Tools',
             'nav.memory': 'Memory',
             'nav.install': 'Install',
+            'nav.companion': 'agodesk',
             'nav.faq': 'FAQ',
             'nav.github': 'GitHub',
             'hero.eyebrow': 'Open Source \u00b7 Self-Hosted',
@@ -1368,6 +1408,10 @@ go build -o aurago ./cmd/aurago
             'req.perf.cpu': 'Quad Core CPU',
             'req.perf.ram': '<strong>8 GB</strong> RAM',
             'req.perf.storage': '<strong>100 GB</strong> Storage',
+            'companion.title': '<em>agodesk</em> Companion App',
+            'companion.subtitle': 'Der plattformunabhängige Desktop-Client für AuraGo. Windows, Linux - verbindet sich per WebSocket, kein Browser nötig.',
+            'companion.cta': 'Downloads &amp; Releases',
+            'companion.source': 'Quellcode auf GitHub',
             'faq.title': 'Häufige <em>Fragen</em>',
             'faq.q1': 'Was ist AuraGo?',
             'faq.a1': 'AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Er läuft als Single Binary mit zero Dependencies auf jedem Linux-Server oder Raspberry Pi. Er hat direkten Zugriff auf deine Infrastruktur, hält alle Daten lokal und arbeitet 24/7 für dich, on demand oder automatisiert.',
@@ -1400,6 +1444,7 @@ go build -o aurago ./cmd/aurago
             'nav.tools': 'Tools',
             'nav.memory': 'Memory',
             'nav.install': 'Install',
+            'nav.companion': 'agodesk',
             'nav.faq': 'FAQ',
             'nav.github': 'GitHub',
             'hero.eyebrow': 'Open Source \u00b7 Self-Hosted',
@@ -1526,6 +1571,10 @@ go build -o aurago ./cmd/aurago
             'req.perf.cpu': 'Quad Core CPU',
             'req.perf.ram': '<strong>8 GB</strong> RAM',
             'req.perf.storage': '<strong>100 GB</strong> Storage',
+            'companion.title': '<em>agodesk</em> Companion App',
+            'companion.subtitle': 'Cross-platform desktop client for AuraGo. Windows, Linux - connects via WebSocket, no browser needed.',
+            'companion.cta': 'Downloads &amp; Releases',
+            'companion.source': 'Source on GitHub',
             'faq.title': 'Frequently Asked <em>Questions</em>',
             'faq.q1': 'What is AuraGo?',
             'faq.a1': 'AuraGo is a self-hosted AI agent for home labs. It runs as a single binary with zero dependencies on any Linux server or Raspberry Pi. It has direct access to your infrastructure, keeps all data local and works 24/7 for you, on demand or automated.',
@@ -1667,7 +1716,7 @@ go build -o aurago ./cmd/aurago
     });
 
     // ===== Scrollspy: active nav link =====
-    const sections = ['home', 'features', 'gallery', 'tools', 'memory', 'install', 'faq'];
+    const sections = ['home', 'features', 'gallery', 'tools', 'memory', 'install', 'companion', 'faq'];
     const navLinksAll = document.querySelectorAll('.nav-links a[href^="#"]');
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
