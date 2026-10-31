@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="meta.title">AuraGo - Dein Home Lab AI Agent</title>
+    <title data-i18n="meta.title">AuraGo – Dein Home Lab AI Agent</title>
     <meta name="description" data-i18n-attr="content" data-i18n="meta.desc" content="AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Single Binary, zero dependencies, läuft auf jedem Linux-Server oder Raspberry Pi.">
-    <meta property="og:title" content="AuraGo - Home Lab AI Agent">
+    <meta property="og:title" content="AuraGo – Home Lab AI Agent">
     <meta property="og:description" content="Self-hosted AI agent with 100+ tools, memory system, web UI and PWA. Runs on your hardware.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://github.com/antibyte/AuraGo">
+    <meta property="og:url" content="https://antibyte.github.io/aurago-web/">
+    <meta property="og:image" content="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#050508">
+    <link rel="canonical" href="https://antibyte.github.io/aurago-web/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
@@ -39,7 +43,8 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        h1, h2, h3, h4, p, li { text-wrap: balance; }
+        h1, h2, h3, h4 { text-wrap: balance; }
+        p, li { text-wrap: pretty; }
         :focus-visible {
             outline: 2px solid var(--accent);
             outline-offset: 2px;
@@ -77,7 +82,7 @@
 
         a { color: inherit; text-decoration: none; }
         ul { list-style: none; }
-        img { max-width: 100%; display: block; }
+        img { max-width: 100%; height: auto; display: block; }
         button { cursor: pointer; font: inherit; border: none; background: none; color: inherit; }
 
         .skip-link {
@@ -91,6 +96,7 @@
         .skip-link:focus { top: 1rem; }
 
 
+        main:focus { outline: none; }
         .container { max-width: 1200px; margin: 0 auto; padding-inline: 1.5rem; position: relative; z-index: 1; }
 
         .eyebrow {
@@ -181,7 +187,7 @@
             background: var(--accent);
             color: var(--bg);
         }
-        .mobile-menu-btn { display: none; font-size: 1.3rem; color: var(--text); }
+        .mobile-menu-btn { display: none; font-size: 1.3rem; color: var(--text); min-width: 44px; min-height: 44px; }
 
         /* ===== Hero ===== */
         .hero {
@@ -204,6 +210,7 @@
             max-width: 520px;
         }
         .hero h1 em { font-style: normal; color: var(--accent); }
+        .hero-tagline { display: block; font-size: 0.5em; font-weight: 500; letter-spacing: -0.02em; color: var(--text-secondary); margin-top: 0.6rem; line-height: 1.2; }
         .hero p {
             font-size: 1.05rem; color: var(--text-secondary);
             max-width: 480px; margin-bottom: 2rem;
@@ -267,7 +274,7 @@
         .hero-screenshot img { width: 100%; height: auto; display: block; }
 
         /* ===== Section Base ===== */
-        section { padding: 6rem 0 7rem; position: relative; }
+        section { padding: 6rem 0 7rem; position: relative; scroll-margin-top: 5rem; }
         .section-header { max-width: 580px; margin-bottom: 3rem; }
         .section-header.center { margin-left: auto; margin-right: auto; text-align: center; }
         .section-header h2 {
@@ -356,6 +363,7 @@
         }
         .gallery-item img {
             width: 100%; height: auto; display: block;
+            aspect-ratio: 16/9; object-fit: cover; object-position: top;
             transition: transform 0.6s cubic-bezier(0.32,0.72,0,1);
         }
         .gallery-item:hover img { transform: scale(1.03); }
@@ -368,6 +376,9 @@
         }
         .gallery-item:hover .gallery-label { opacity: 1; }
         .gallery-item.wide { grid-column: span 2; }
+        .gallery-item.wide img { aspect-ratio: 16/8; }
+        .gallery-item:focus-within .gallery-label { opacity: 1; }
+        @media (hover: none) { .gallery-item .gallery-label { opacity: 1; } }
 
         /* ===== Themes ===== */
         .themes-section { padding: 5rem 0; }
@@ -435,7 +446,8 @@
             border-radius: var(--radius-lg);
             overflow: hidden;
             border: 1px solid var(--border);
-            margin-bottom: 2.5rem;
+            max-width: 960px;
+            margin: 0 auto 2.5rem;
         }
         .memory-visual img { width: 100%; display: block; }
         .memory-list {
@@ -529,25 +541,37 @@
         .req-specs {
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 0.7rem;
+            width: fit-content;
+            margin: 0 auto;
         }
         .req-spec {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            justify-content: flex-start;
+            gap: 0.6rem;
             font-size: 0.82rem;
+            text-align: left;
             color: var(--text-secondary);
         }
         .req-spec-icon {
-            font-size: 0.9rem;
-            width: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.6rem; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--text-muted);
+            padding: 0.15rem 0.4rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            min-width: 3.2rem;
             text-align: center;
+            flex-shrink: 0;
         }
         .req-spec strong {
             color: var(--text);
             font-weight: 600;
         }
+        .req-note { max-width: 640px; margin: 2rem auto 0; text-align: center; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65; }
         @media (max-width: 768px) {
             .req-grid { grid-template-columns: 1fr; max-width: 400px; }
         }
@@ -611,9 +635,13 @@
             color: var(--text-secondary);
         }
         .code-block pre .c { color: var(--text-muted); }
+        .code-block pre .k { color: var(--accent); }
         .code-block pre .v { color: #b8a88a; }
         .code-block pre .s { color: #7ec699; }
         .code-block pre .n { color: #d19a66; }
+
+        .install-note { margin-top: 1rem; text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+        .install-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 
         /* ===== Companion App ===== */
         .companion-section { padding: 5rem 0; }
@@ -630,6 +658,15 @@
             font-size: 0.68rem; font-weight: 500;
             color: var(--text-secondary);
             font-family: var(--font-mono);
+        }
+
+        .companion-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.25rem; flex-wrap: wrap; }
+        .companion-visual {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            max-width: 720px;
+            margin: 2.5rem auto 0;
         }
 
         /* ===== FAQ ===== */
@@ -653,11 +690,13 @@
         }
         .faq-item.open .faq-arrow { transform: rotate(180deg); color: var(--accent); }
         .faq-a {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.32,0.72,0,1), padding 0.4s cubic-bezier(0.32,0.72,0,1);
+            display: grid; grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.32,0.72,0,1);
         }
-        .faq-item.open .faq-a { max-height: 300px; padding-bottom: 1.1rem; }
-        .faq-a p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; }
+        .faq-item.open .faq-a { grid-template-rows: 1fr; }
+        .faq-a-inner { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s 0.4s; }
+        .faq-item.open .faq-a-inner { visibility: visible; transition-delay: 0s; }
+        .faq-a p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; padding-bottom: 1.1rem; }
         .faq-a a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 
         /* ===== Footer ===== */
@@ -712,21 +751,25 @@
             .tools-grid { grid-template-columns: repeat(2, 1fr); }
             .footer-grid { grid-template-columns: 1fr 1fr; }
         }
-        @media (max-width: 768px) {
-            .navbar { width: calc(100% - 2rem); padding: 0.5rem 1rem; gap: 0.8rem; flex-wrap: wrap; }
+        @media (max-width: 900px) {
+            .navbar { width: calc(100% - 2rem); padding: 0.5rem 1rem; gap: 0.8rem; }
             .nav-links {
                 display: none; position: absolute;
                 top: calc(100% + 0.5rem); left: 0; right: 0;
-                flex-direction: column;
-                background: rgba(10,10,16,0.97);
-                backdrop-filter: blur(20px);
+                flex-direction: column; align-items: stretch;
+                background: #0c0c12;
+                box-shadow: 0 16px 40px rgba(5,5,8,0.6);
                 border: 1px solid var(--border);
                 border-radius: var(--radius-md);
-                padding: 1rem; gap: 0.5rem;
+                padding: 0.5rem 1rem; gap: 0;
             }
             .nav-links.nav-open { display: flex; }
-            .nav-links a { padding: 0.5rem 0; font-size: 0.85rem; }
+            .nav-links a { display: flex; align-items: center; min-height: 44px; font-size: 0.85rem; }
+            .nav-links a::after { display: none; }
             .mobile-menu-btn { display: block; }
+            .lang-switch { margin-left: auto; }
+        }
+        @media (max-width: 768px) {
             .bento-grid { grid-template-columns: 1fr; }
             .bento-card.col-2 { grid-column: span 1; }
             .gallery-grid { grid-template-columns: 1fr; }
@@ -735,12 +778,11 @@
             .tools-grid { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
             .footer-bottom { flex-direction: column; text-align: center; }
-            section { padding: 3.5rem 0 4rem; }
             .install-tabs { width: 100%; overflow-x: auto; border-radius: var(--radius-md); }
-            .lang-switch { order: -1; margin-left: auto; }
             section { padding: 4rem 0 5rem; }
         }
         @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
             .reveal { opacity: 1; transform: none; filter: none; }
         }
@@ -748,7 +790,7 @@
 </head>
 <body>
     <div id="nav-sentinel" style="position:absolute;top:0;left:0;width:100%;height:1px;pointer-events:none" aria-hidden="true"></div>
-    <a href="#home" class="skip-link" data-i18n="skipLink">Zum Inhalt springen</a>
+    <a href="#main" class="skip-link" data-i18n="skipLink">Zum Inhalt springen</a>
 
     <div class="ambient-glow a"></div>
     <div class="ambient-glow b"></div>
@@ -756,7 +798,7 @@
 
     <nav class="navbar" id="navbar">
         <a href="#" class="logo">
-            <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" alt="AuraGo" loading="lazy">
+            <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" alt="AuraGo" width="96" height="96">
             <span>Aura<span>Go</span></span>
         </a>
         <ul class="nav-links" id="navLinks">
@@ -769,24 +811,26 @@
             <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
             <li><a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener" data-i18n="nav.github">GitHub</a></li>
         </ul>
-        <div class="lang-switch" id="langSwitch">
-            <button data-lang="de" class="active">DE</button>
-            <button data-lang="en">EN</button>
+        <div class="lang-switch" id="langSwitch" role="group" aria-label="Sprache">
+            <button type="button" data-lang="de" class="active" aria-pressed="true">DE</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">&#9776;</button>
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menü" aria-controls="navLinks" aria-expanded="false">&#9776;</button>
     </nav>
 
+    <main id="main" tabindex="-1">
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-content">
                     <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="hero.eyebrow">Open Source &middot; Self-Hosted</span></div>
-                    <h1 data-i18n="hero.title">Dein <em>Home Lab AI Agent</em> - single binary, zero dependencies</h1>
+                    <h1 data-i18n="hero.title">Dein <em>Home Lab AI Agent</em><span class="hero-tagline">Single Binary, zero Dependencies.</span></h1>
                     <p data-i18n="hero.desc">AuraGo läuft auf deiner Hardware mit direktem Zugriff auf deine Infrastruktur. Alle Daten bleiben lokal, 24/7.</p>
                     <div class="hero-badges">
-                        <span class="hero-badge ok"><span class="dot"></span>Go 1.26+</span>
+                        <span class="hero-badge ok"><span class="dot"></span>Go 1.27+</span>
                         <span class="hero-badge ok"><span class="dot"></span>MIT License</span>
                         <span class="hero-badge ok"><span class="dot"></span>Docker Ready</span>
+                        <span class="hero-badge ok"><span class="dot"></span><span data-i18n="hero.badgeLang">16 UI-Sprachen</span></span>
                     </div>
                     <div class="cta-row">
                         <a href="#install" class="btn btn-primary"><span data-i18n="hero.cta1">Jetzt installieren</span> <span class="btn-arrow">&#8594;</span></a>
@@ -795,7 +839,7 @@
                 </div>
                 <div class="hero-visual reveal">
                     <div class="hero-screenshot">
-                        <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png" alt="AuraGo Dashboard" loading="eager">
+                        <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png" alt="AuraGo Dashboard" width="1440" height="1233" loading="eager" fetchpriority="high">
                     </div>
                 </div>
             </div>
@@ -858,55 +902,57 @@
     <section id="gallery" class="gallery-section">
         <div class="container">
             <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="gallery.eyebrow">Im Einsatz</span></div>
                 <h2 data-i18n="gallery.title">So sieht <em>AuraGo</em> aus</h2>
-                <p data-i18n="gallery.subtitle">Dashboard, Chat, Container-Management, Konfiguration und Themes - alles aus dem Browser.</p>
+                <p data-i18n="gallery.subtitle">Dashboard, Chat, Container-Management, Konfiguration und Themes – alles aus dem Browser.</p>
             </div>
             <div class="gallery-grid">
                 <div class="gallery-item reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png" alt="Dashboard" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/dashboard.png" alt="Dashboard" width="1440" height="1233" loading="lazy" decoding="async">
                     <div class="gallery-label" data-i18n="gallery.dashboard">Dashboard</div>
                 </div>
                 <div class="gallery-item reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/chat.png" alt="Chat" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/chat.png" alt="Chat" width="1915" height="867" loading="lazy" decoding="async">
                     <div class="gallery-label" data-i18n="gallery.chat">Chat</div>
                 </div>
                 <div class="gallery-item reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/containers.png" alt="Containers" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/containers.png" alt="Containers" width="1909" height="858" loading="lazy" decoding="async">
                     <div class="gallery-label" data-i18n="gallery.containers">Container Management</div>
                 </div>
                 <div class="gallery-item reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/config.png" alt="Config" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/config.png" alt="Config" width="1909" height="863" loading="lazy" decoding="async">
                     <div class="gallery-label" data-i18n="gallery.config">Konfiguration</div>
                 </div>
                 <div class="gallery-item wide reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/desktop.png" alt="Virtual Desktop" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/desktop.png" alt="Virtual Desktop" width="1440" height="900" loading="lazy" decoding="async">
                     <div class="gallery-label" data-i18n="gallery.desktop">Virtual Desktop im Browser</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="themes-section">
+    <section id="themes" class="themes-section">
         <div class="container">
             <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="themes.eyebrow">Look &amp; Feel</span></div>
                 <h2 data-i18n="themes.title">Wähle dein <em>Theme</em></h2>
-                <p data-i18n="themes.subtitle">Von Cyberwar über Retro CRT bis Lollipop - finde deinen Stil.</p>
+                <p data-i18n="themes.subtitle">Von Cyberwar über Retro CRT bis Lollipop – finde deinen Stil.</p>
             </div>
             <div class="themes-grid">
                 <div class="theme-card reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme1.png" alt="Cyberwar" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme1.png" alt="Cyberwar" width="1911" height="862" loading="lazy" decoding="async">
                     <div class="tc-name">Cyberwar</div>
                 </div>
                 <div class="theme-card reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme2.png" alt="Retro CRT" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme2.png" alt="Retro CRT" width="1900" height="858" loading="lazy" decoding="async">
                     <div class="tc-name">Retro CRT</div>
                 </div>
                 <div class="theme-card reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme3.png" alt="Dark Sun" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme3.png" alt="Dark Sun" width="1914" height="861" loading="lazy" decoding="async">
                     <div class="tc-name">Dark Sun</div>
                 </div>
                 <div class="theme-card reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme4.png" alt="Lollipop" loading="lazy">
+                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/theme4.png" alt="Lollipop" width="1915" height="862" loading="lazy" decoding="async">
                     <div class="tc-name">Lollipop</div>
                 </div>
             </div>
@@ -916,7 +962,8 @@
     <section id="tools" class="tools-section">
         <div class="container">
             <div class="section-header center reveal">
-                <h2 data-i18n="tools.title">Verbinde <em>alles</em> - aus der Box</h2>
+                <div class="eyebrow"><span data-i18n="tools.eyebrow">100+ Built-in Tools</span></div>
+                <h2 data-i18n="tools.title">Verbinde <em>alles</em> – aus der Box</h2>
                 <p data-i18n="tools.subtitle">Von Home Assistant über Docker bis zu Google Workspace. Keine shady Skills aus dem Internet nötig.</p>
             </div>
             <div class="tools-grid">
@@ -1015,14 +1062,15 @@
 
     <section id="memory" class="memory-section">
         <div class="container">
-            <div class="section-header reveal">
+            <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="memory.eyebrow">Memory System</span></div>
                 <h2 data-i18n="memory.title">Er erinnert sich. <em>Wirklich.</em></h2>
-                <p data-i18n="memory.subtitle">AuraGo plaudert nicht nur, es behält. Mit einem mehrschichtigen Memory-System, das über Zeit lernt.</p>
+                <p data-i18n="memory.subtitle">AuraGo plaudert nicht nur – er merkt sich auch, worum es ging. Mit einem mehrschichtigen Memory-System, das über Zeit lernt.</p>
             </div>
             <div class="memory-visual reveal">
-                    <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/documentation/screenshots/chat.png" alt="Chat" loading="lazy">
-                </div>
-                <div class="memory-list">
+                <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/assets/readme/gopher-memory-map.webp" alt="Illustration: Verlauf, Core Memory, semantisches Memory und Knowledge Graph fließen in den Kontext für das Modell" data-i18n="memory.alt" data-i18n-attr="alt" width="1448" height="1086" loading="lazy" decoding="async">
+            </div>
+            <div class="memory-list">
                     <div class="memory-item reveal">
                         <div class="mi-icon">&#128172;</div>
                         <div>
@@ -1058,7 +1106,14 @@
                             <p data-i18n="memory.smart.desc">Memory Analysis extrahiert in Echtzeit Fakten. Nightly Consolidation archiviert alte Chats. Weekly Reflection erkennt Muster.</p>
                         </div>
                     </div>
-                </div>
+                    <div class="memory-item reveal">
+                        <div class="mi-icon">&#129517;</div>
+                        <div>
+                            <h4 data-i18n="memory.ins.title">Insights &amp; Korrekturen</h4>
+                            <p data-i18n="memory.ins.desc">Insights behalten ihre Belege und Revisionen. Mit Memory-Korrekturen berichtigst du, was der Agent falsch abgelegt hat.</p>
+                        </div>
+                    </div>
+            </div>
         </div>
     </section>
 
@@ -1066,111 +1121,111 @@
     <section id="requirements" class="req-section">
         <div class="container">
             <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="req.eyebrow">Systemanforderungen</span></div>
                 <h2 data-i18n="req.title">Was du <em>brauchst</em></h2>
-                <p data-i18n="req.subtitle">AuraGo läuft auf fast allem, vom Raspberry Pi bis zum Homeserver.</p>
+                <p data-i18n="req.subtitle">Ein Linux-Rechner und etwas Platz für einen Gopher. Debian-basiert ist ideal.</p>
             </div>
             <div class="req-grid">
                 <div class="req-card reveal">
-                    <div class="req-badge" data-i18n="req.min.badge">Minimal</div>
-                    <h3 data-i18n="req.min.title">Raspberry Pi</h3>
+                    <div class="req-badge" data-i18n="req.min.badge">Minimum</div>
+                    <h3 data-i18n="req.min.title">Raspberry Pi / kleine VM</h3>
                     <div class="req-specs">
-                        <div class="req-spec"><span class="req-spec-icon">&#128187;</span><span data-i18n="req.min.cpu">Dual Core CPU</span></div>
-                        <div class="req-spec"><span class="req-spec-icon">&#128163;</span><span data-i18n="req.min.ram"><strong>2 GB</strong> RAM</span></div>
-                        <div class="req-spec"><span class="req-spec-icon">&#128190;</span><span data-i18n="req.min.storage"><strong>5 GB</strong> Storage</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">CPU</span><span data-i18n="req.min.cpu">Dual-Core CPU</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">RAM</span><span data-i18n="req.min.ram"><strong>2 GB</strong> RAM</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">DISK</span><span data-i18n="req.min.storage"><strong>1 GB</strong> freier Speicher</span></div>
                     </div>
                 </div>
                 <div class="req-card recommended reveal">
                     <div class="req-badge" data-i18n="req.rec.badge">Empfohlen</div>
-                    <h3 data-i18n="req.rec.title">Homeserver</h3>
+                    <h3 data-i18n="req.rec.title">Mini-PC / Proxmox LXC</h3>
                     <div class="req-specs">
-                        <div class="req-spec"><span class="req-spec-icon">&#128187;</span><span data-i18n="req.rec.cpu">Quad Core CPU</span></div>
-                        <div class="req-spec"><span class="req-spec-icon">&#128163;</span><span data-i18n="req.rec.ram"><strong>4 GB</strong> RAM</span></div>
-                        <div class="req-spec"><span class="req-spec-icon">&#128190;</span><span data-i18n="req.rec.storage"><strong>20 GB</strong> Storage</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">CPU</span><span data-i18n="req.rec.cpu">Quad-Core CPU</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">RAM</span><span data-i18n="req.rec.ram"><strong>8 GB</strong> RAM</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">DISK</span><span data-i18n="req.rec.storage"><strong>20+ GB</strong> SSD</span></div>
                     </div>
                 </div>
                 <div class="req-card reveal">
-                    <div class="req-badge" data-i18n="req.perf.badge">Perfekt</div>
-                    <h3 data-i18n="req.perf.title">Powerhouse</h3>
+                    <div class="req-badge" data-i18n="req.opt.badge">Optional</div>
+                    <h3 data-i18n="req.opt.title">Lokale KI</h3>
                     <div class="req-specs">
-                        <div class="req-spec"><span class="req-spec-icon">&#128187;</span><span data-i18n="req.perf.cpu">Quad Core CPU</span></div>
-                        <div class="req-spec"><span class="req-spec-icon">&#128163;</span><span data-i18n="req.perf.ram"><strong>8 GB</strong> RAM</span></div>
-                        <div class="req-spec"><span class="req-spec-icon">&#128190;</span><span data-i18n="req.perf.storage"><strong>100 GB</strong> Storage</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">GPU</span><span data-i18n="req.opt.gpu">Integrierte oder dedizierte GPU</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">RAM</span><span data-i18n="req.opt.ram">Extra RAM / VRAM fürs Modell</span></div>
+                        <div class="req-spec"><span class="req-spec-icon">DISK</span><span data-i18n="req.opt.storage">Extra Speicher für Modelle</span></div>
                     </div>
                 </div>
             </div>
+            <p class="req-note reveal" data-i18n="req.note">Die Angaben gelten für AuraGo selbst – lokale Modelle und optionale Dienste brauchen zusätzlich RAM, Speicher und ggf. GPU-Speicher.</p>
         </div>
     </section>
 
     <section id="install" class="install-section">
         <div class="container">
             <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="install.eyebrow">Schnellstart</span></div>
                 <h2 data-i18n="install.title">In <em>Sekunden</em> startklar</h2>
-                <p data-i18n="install.subtitle">Wähle deinen Installationspfad: One-Liner, Docker Compose oder Build from Source.</p>
+                <p data-i18n="install.subtitle">Wähle deinen Weg: signierter Installer, Docker Compose oder aus dem Quellcode.</p>
             </div>
             <div class="reveal">
-                <div class="install-tabs">
-                    <button class="install-tab active" data-tab="curl" data-i18n="install.tab1">One-Liner</button>
-                    <button class="install-tab" data-tab="docker" data-i18n="install.tab2">Docker Compose</button>
-                    <button class="install-tab" data-tab="source" data-i18n="install.tab3">Build from Source</button>
+                <div class="install-tabs" role="tablist">
+                    <button type="button" class="install-tab active" role="tab" id="tab-curl" aria-selected="true" aria-controls="panel-curl" tabindex="0" data-tab="curl" data-i18n="install.tab1">Installer</button>
+                    <button type="button" class="install-tab" role="tab" id="tab-docker" aria-selected="false" aria-controls="panel-docker" tabindex="-1" data-tab="docker" data-i18n="install.tab2">Docker Compose</button>
+                    <button type="button" class="install-tab" role="tab" id="tab-source" aria-selected="false" aria-controls="panel-source" tabindex="-1" data-tab="source" data-i18n="install.tab3">Aus dem Quellcode</button>
                 </div>
-                <div class="install-panel active" id="panel-curl">
+                <div class="install-panel active" id="panel-curl" role="tabpanel" aria-labelledby="tab-curl">
                     <div class="code-block">
                         <div class="cb-header">
                             <span class="cb-filename">terminal</span>
-                            <button class="copy-btn" data-code="curl -fsSL https://raw.githubusercontent.com/antibyte/AuraGo/main/install.sh | bash">Copy</button>
+                            <button type="button" class="copy-btn" aria-label="Code in die Zwischenablage kopieren" data-code="curl -fsSLO https://github.com/antibyte/AuraGo/releases/latest/download/install.sh
+bash install.sh">Kopieren</button>
                         </div>
-                        <pre><span class="c"># One-Liner Installation (empfohlen)</span>
-<span class="c"># Setzt Docker, HTTPS und systemd automatisch auf</span>
+                        <pre><span class="c" data-i18n="install.c.signed"># Signierter Installer (empfohlen) – prüft Release-Signatur und alle Dateien</span>
+curl -fsSLO https://github.com/antibyte/AuraGo/releases/latest/download/install.sh
+bash install.sh
+
+<span class="c" data-i18n="install.c.main"># Oder: Quick Install direkt vom main-Branch</span>
 curl -fsSL https://raw.githubusercontent.com/antibyte/AuraGo/main/install.sh | bash
 
-<span class="c"># Danach:</span>
-cd ~/aurago
-source .env
-./start.sh
-
-<span class="c"># Öffne http://localhost:8088</span></pre>
+<span class="c" data-i18n="install.c.starts"># Der Installer startet AuraGo und zeigt URL + Erst-Passwort.</span>
+<span class="c" data-i18n="install.c.usually"># Meist: http://localhost:8088</span></pre>
                     </div>
                 </div>
-                <div class="install-panel" id="panel-docker">
-                    <div class="code-block">
-                        <div class="cb-header">
-                            <span class="cb-filename">docker-compose.yml</span>
-                            <button class="copy-btn" data-code="services:
-  aurago:
-    image: ghcr.io/antibyte/aurago:latest
-    ports:
-      - &quot;8088:8088&quot;
-    volumes:
-      - ./data:/app/data
-      - ./config.yaml:/app/config.yaml
-      - ./secrets:/run/optional-secrets:ro">Copy</button>
-                        </div>
-                        <pre><span class="k">services</span>:
-  <span class="n">aurago</span>:
-    <span class="k">image</span>: <span class="s">ghcr.io/antibyte/aurago:latest</span>
-    <span class="k">ports</span>:
-      - <span class="s">&quot;8088:8088&quot;</span>
-    <span class="k">volumes</span>:
-      - <span class="s">./data:/app/data</span>
-      - <span class="s">./config.yaml:/app/config.yaml</span>
-      - <span class="s">./secrets:/run/optional-secrets:ro</span></pre>
-                    </div>
-                </div>
-                <div class="install-panel" id="panel-source">
+                <div class="install-panel" id="panel-docker" role="tabpanel" aria-labelledby="tab-docker">
                     <div class="code-block">
                         <div class="cb-header">
                             <span class="cb-filename">terminal</span>
-                            <button class="copy-btn" data-code="git clone https://github.com/antibyte/AuraGo.git
+                            <button type="button" class="copy-btn" aria-label="Code in die Zwischenablage kopieren" data-code="git clone https://github.com/antibyte/AuraGo.git
 cd AuraGo
-go build -o aurago ./cmd/aurago
-./aurago">Copy</button>
+docker compose up -d">Kopieren</button>
                         </div>
                         <pre>git clone https://github.com/antibyte/AuraGo.git
 cd AuraGo
-go build -o aurago ./cmd/aurago
-./aurago</pre>
+docker compose up -d
+
+<span class="c" data-i18n="install.c.persist"># Persistente Volumes + eingeschränkter Docker-Socket-Proxy</span>
+<span class="c" data-i18n="install.c.open"># Öffne http://localhost:8088</span></pre>
                     </div>
                 </div>
+                <div class="install-panel" id="panel-source" role="tabpanel" aria-labelledby="tab-source">
+                    <div class="code-block">
+                        <div class="cb-header">
+                            <span class="cb-filename">terminal</span>
+                            <button type="button" class="copy-btn" aria-label="Code in die Zwischenablage kopieren" data-code="git clone https://github.com/antibyte/AuraGo.git
+cd AuraGo
+node scripts/build-ui-bundles.js
+go run ./cmd/assetpack -out deploy -stage assets/web
+go build -trimpath -ldflags=&quot;-s -w $(cat deploy/web-assets.ldflags)&quot; -o aurago ./cmd/aurago
+./aurago --check-assets">Kopieren</button>
+                        </div>
+                        <pre><span class="c" data-i18n="install.c.req"># Benötigt Go 1.27.3+ und Node.js</span>
+git clone https://github.com/antibyte/AuraGo.git
+cd AuraGo
+node scripts/build-ui-bundles.js
+go run ./cmd/assetpack -out deploy -stage assets/web
+go build -trimpath -ldflags="-s -w $(cat deploy/web-assets.ldflags)" -o aurago ./cmd/aurago
+./aurago --check-assets</pre>
+                    </div>
+                </div>
+                <p class="install-note" data-i18n="install.note">Mehr dazu im <a href="https://github.com/antibyte/AuraGo/blob/main/documentation/docker_installation.md" target="_blank" rel="noopener">Docker-Leitfaden</a> und im <a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manuals/de/README.md" target="_blank" rel="noopener">Handbuch</a>.</p>
             </div>
         </div>
     </section>
@@ -1178,20 +1233,24 @@ go build -o aurago ./cmd/aurago
     <section id="companion" class="companion-section">
         <div class="container">
             <div class="section-header center reveal">
+                <div class="eyebrow"><span data-i18n="companion.eyebrow">Desktop-Client</span></div>
                 <h2 data-i18n="companion.title"><em>agodesk</em> Companion App</h2>
-                <p data-i18n="companion.subtitle">Der plattformunabhängige Desktop-Client für AuraGo. Windows, Linux — verbindet sich per WebSocket, kein Browser nötig.</p>
+                <p data-i18n="companion.subtitle">Der plattformunabhängige Desktop-Client für AuraGo. Windows, Linux – verbindet sich per WebSocket, kein Browser nötig.</p>
             </div>
             <div class="companion-cta reveal">
                 <a href="https://github.com/antibyte/agodesk/releases" target="_blank" rel="noopener" class="btn btn-primary"><span data-i18n="companion.cta">Downloads &amp; Releases</span> <span class="btn-arrow">&#8594;</span></a>
                 <a href="https://github.com/antibyte/agodesk" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="companion.source">Quellcode auf GitHub</a>
             </div>
-            <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:1.25rem;flex-wrap:wrap">
+            <div class="companion-badges">
                 <span class="companion-badge">Windows .exe</span>
                 <span class="companion-badge">Windows .msi</span>
                 <span class="companion-badge">Linux .deb</span>
                 <span class="companion-badge">Linux .AppImage</span>
                 <span class="companion-badge">Linux .rpm</span>
                 <span class="companion-badge">Tauri + Svelte + Rust</span>
+            </div>
+            <div class="companion-visual reveal">
+                <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/assets/readme/agodesk.png" alt="agodesk Desktop-Client mit Chat und Sprachsteuerung" data-i18n="companion.alt" data-i18n-attr="alt" width="1350" height="1039" loading="lazy" decoding="async">
             </div>
         </div>
     </section>
@@ -1204,35 +1263,40 @@ go build -o aurago ./cmd/aurago
             </div>
             <div class="faq-list">
                 <div class="faq-item reveal">
-                    <button class="faq-q"><span data-i18n="faq.q1">Was ist AuraGo?</span> <span class="faq-arrow">&#9662;</span></button>
-                    <div class="faq-a"><p data-i18n="faq.a1">AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Er läuft als Single Binary mit zero Dependencies auf jedem Linux-Server oder Raspberry Pi. Er hat direkten Zugriff auf deine Infrastruktur, hält alle Daten lokal und arbeitet 24/7 für dich, on demand oder automatisiert.</p></div>
+                    <button type="button" class="faq-q" id="faq-q1" aria-expanded="false" aria-controls="faq-a1"><span data-i18n="faq.q1">Was ist AuraGo?</span> <span class="faq-arrow" aria-hidden="true">&#9662;</span></button>
+                    <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div class="faq-a-inner"><p data-i18n="faq.a1">AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Er läuft als Single Binary mit zero Dependencies auf jedem Linux-Server oder Raspberry Pi. Er hat direkten Zugriff auf deine Infrastruktur, hält alle Daten lokal und arbeitet 24/7 für dich, on demand oder automatisiert.</p></div></div>
                 </div>
                 <div class="faq-item reveal">
-                    <button class="faq-q"><span data-i18n="faq.q2">Kann ich lokale Modelle nutzen?</span> <span class="faq-arrow">&#9662;</span></button>
-                    <div class="faq-a"><p data-i18n="faq.a2">Ja. AuraGo unterstützt Ollama out of the box für lokale Modelle wie Llama 3, Mistral und andere. Du kannst auch beliebige OpenAI-kompatible APIs oder OpenRouter nutzen.</p></div>
+                    <button type="button" class="faq-q" id="faq-q2" aria-expanded="false" aria-controls="faq-a2"><span data-i18n="faq.q2">Kann ich lokale Modelle nutzen?</span> <span class="faq-arrow" aria-hidden="true">&#9662;</span></button>
+                    <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div class="faq-a-inner"><p data-i18n="faq.a2">Ja. AuraGo unterstützt Ollama out of the box für lokale Modelle wie Qwen, Llama, Mistral oder Gemma. Du kannst auch jede OpenAI-kompatible API oder OpenRouter nutzen.</p></div></div>
                 </div>
                 <div class="faq-item reveal">
-                    <button class="faq-q"><span data-i18n="faq.q3">Ist AuraGo produktionsreif?</span> <span class="faq-arrow">&#9662;</span></button>
-                    <div class="faq-a"><p data-i18n="faq.a3">AuraGo ist unter aktiver Entwicklung. Viele Features sind bereits stabil und werden produktiv genutzt. Es gibt gelegentlich Breaking Changes. Windows- und macOS-Support ist theoretisch vorhanden, aber nicht getestet.</p></div>
+                    <button type="button" class="faq-q" id="faq-q3" aria-expanded="false" aria-controls="faq-a3"><span data-i18n="faq.q3">Ist AuraGo produktionsreif?</span> <span class="faq-arrow" aria-hidden="true">&#9662;</span></button>
+                    <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-q3"><div class="faq-a-inner"><p data-i18n="faq.a3">AuraGo ist unter aktiver Entwicklung – ein Maintainer, gelegentlich raue Kanten und Breaking Changes. Linux steht an erster Stelle; Windows- und macOS-Builds sind weniger getestet.</p></div></div>
                 </div>
                 <div class="faq-item reveal">
-                    <button class="faq-q"><span data-i18n="faq.q4">Wie sicher ist AuraGo?</span> <span class="faq-arrow">&#9662;</span></button>
-                    <div class="faq-a"><p data-i18n="faq.a4">AuraGo wurde Security-First entwickelt: AES-256-GCM Vault für API-Keys, bcrypt + TOTP 2FA, Sandbox für Python-Execution, HTTPS mit Auto-TLS, LLM Guardian für Tool-Call-Scanning und granularer Danger Zone mit individuellen Toggles.</p></div>
+                    <button type="button" class="faq-q" id="faq-q4" aria-expanded="false" aria-controls="faq-a4"><span data-i18n="faq.q4">Wie sicher ist AuraGo?</span> <span class="faq-arrow" aria-hidden="true">&#9662;</span></button>
+                    <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-q4"><div class="faq-a-inner"><p data-i18n="faq.a4">AuraGo wurde Security-First entwickelt: AES-256-GCM Vault für API-Keys, bcrypt + TOTP 2FA, Sandbox für Python-Execution, HTTPS mit Auto-TLS, LLM Guardian für Tool-Call-Scanning und granularer Danger Zone mit individuellen Toggles.</p></div></div>
                 </div>
                 <div class="faq-item reveal">
-                    <button class="faq-q"><span data-i18n="faq.q5">Wie kann ich mitmachen?</span> <span class="faq-arrow">&#9662;</span></button>
-                    <div class="faq-a"><p data-i18n="faq.a5">Schau auf <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a> vorbei. Issues, PRs und Diskussionen sind willkommen. Das Projekt ist ein One-Man-Projekt. Jede Hilfe zählt.</p></div>
+                    <button type="button" class="faq-q" id="faq-q5" aria-expanded="false" aria-controls="faq-a5"><span data-i18n="faq.q5">Wie kann ich mitmachen?</span> <span class="faq-arrow" aria-hidden="true">&#9662;</span></button>
+                    <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-q5"><div class="faq-a-inner"><p data-i18n="faq.a5">Schau auf <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a> vorbei. Issues, PRs und Diskussionen sind willkommen. Das Projekt ist ein One-Man-Projekt. Jede Hilfe zählt.</p></div></div>
+                </div>
+                <div class="faq-item reveal">
+                    <button type="button" class="faq-q" id="faq-q6" aria-expanded="false" aria-controls="faq-a6"><span data-i18n="faq.q6">Bleiben meine Daten wirklich lokal?</span> <span class="faq-arrow" aria-hidden="true">&#9662;</span></button>
+                    <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-q6"><div class="faq-a-inner"><p data-i18n="faq.a6">Deine Daten liegen bei deiner Installation. Gehostete Modelle und externe Dienste erhalten aber die Eingaben ihrer Anfragen – self-hosted heißt nicht automatisch offline. Mit lokalen Modellen über Ollama bleibt alles im Haus.</p></div></div>
                 </div>
             </div>
         </div>
     </section>
+    </main>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="logo">
-                        <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" alt="AuraGo" loading="lazy">
+                        <img src="https://raw.githubusercontent.com/antibyte/AuraGo/main/ui/favicon-96x96.png" alt="AuraGo" width="96" height="96" loading="lazy" decoding="async">
                         <span>Aura<span>Go</span></span>
                     </div>
                     <p data-i18n="footer.brand">Dein Home Lab AI Agent. Single binary, zero dependencies, läuft auf deiner Hardware. Open Source unter MIT License.</p>
@@ -1249,8 +1313,8 @@ go build -o aurago ./cmd/aurago
                 <div class="footer-col">
                     <h4 data-i18n="footer.col2">Ressourcen</h4>
                     <ul>
-                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manual/de/README.md" target="_blank" rel="noopener" data-i18n="footer.res1">Deutsches Handbuch</a></li>
-                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manual/en/README.md" target="_blank" rel="noopener" data-i18n="footer.res2">English Manual</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manuals/de/README.md" target="_blank" rel="noopener" data-i18n="footer.res1">Deutsches Handbuch</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manuals/en/README.md" target="_blank" rel="noopener" data-i18n="footer.res2">English Manual</a></li>
                         <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/configuration.md" target="_blank" rel="noopener" data-i18n="footer.res3">Konfiguration</a></li>
                         <li><a href="https://github.com/antibyte/AuraGo/blob/main/documentation/architecture.md" target="_blank" rel="noopener" data-i18n="footer.res4">Architektur</a></li>
                     </ul>
@@ -1260,7 +1324,7 @@ go build -o aurago ./cmd/aurago
                     <ul>
                         <li><a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a></li>
                         <li><a href="https://github.com/antibyte/AuraGo/issues" target="_blank" rel="noopener" data-i18n="footer.comm2">Issues</a></li>
-                        <li><a href="https://github.com/antibyte/AuraGo/discussions" target="_blank" rel="noopener" data-i18n="footer.comm3">Diskussionen</a></li>
+                        <li><a href="https://github.com/antibyte/AuraGo/releases" target="_blank" rel="noopener" data-i18n="footer.comm3">Releases</a></li>
                     </ul>
                 </div>
             </div>
@@ -1274,7 +1338,7 @@ go build -o aurago ./cmd/aurago
     <script>
     const i18n = {
         de: {
-            'meta.title': 'AuraGo - Dein Home Lab AI Agent',
+            'meta.title': 'AuraGo – Dein Home Lab AI Agent',
             'meta.desc': 'AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Single Binary, zero dependencies, läuft auf jedem Linux-Server oder Raspberry Pi.',
             'nav.features': 'Features',
             'nav.screenshots': 'Screenshots',
@@ -1284,8 +1348,9 @@ go build -o aurago ./cmd/aurago
             'nav.companion': 'agodesk',
             'nav.faq': 'FAQ',
             'nav.github': 'GitHub',
-            'hero.eyebrow': 'Open Source \u00b7 Self-Hosted',
-            'hero.title': 'Dein <em>Home Lab AI Agent</em> - single binary, zero dependencies',
+            'hero.eyebrow': 'Open Source · Self-Hosted',
+            'hero.title': 'Dein <em>Home Lab AI Agent</em><span class="hero-tagline">Single Binary, zero Dependencies.</span>',
+            'hero.badgeLang': '16 UI-Sprachen',
             'hero.desc': 'AuraGo läuft auf deiner Hardware mit direktem Zugriff auf deine Infrastruktur. Alle Daten bleiben lokal, 24/7.',
             'hero.wip': 'Work in Progress',
             'hero.cta1': 'Jetzt installieren',
@@ -1302,7 +1367,7 @@ go build -o aurago ./cmd/aurago
             'features.fncall': 'OpenAI-kompatible Tool-Calls mit Auto-Detection für viele Modelle. Unterstützung für OpenAI, Anthropic, Ollama und alle OpenAI-kompatiblen APIs.',
             'gallery.eyebrow': 'Im Einsatz',
             'gallery.title': 'So sieht <em>AuraGo</em> aus',
-            'gallery.subtitle': 'Dashboard, Chat, Container-Management, Konfiguration und Themes - alles aus dem Browser.',
+            'gallery.subtitle': 'Dashboard, Chat, Container-Management, Konfiguration und Themes – alles aus dem Browser.',
             'gallery.dashboard': 'Dashboard',
             'gallery.chat': 'Chat',
             'gallery.containers': 'Container Management',
@@ -1310,9 +1375,9 @@ go build -o aurago ./cmd/aurago
             'gallery.desktop': 'Virtual Desktop im Browser',
             'themes.eyebrow': 'Look & Feel',
             'themes.title': 'Wähle dein <em>Theme</em>',
-            'themes.subtitle': 'Von Cyberwar über Retro CRT bis Lollipop - finde deinen Stil.',
+            'themes.subtitle': 'Von Cyberwar über Retro CRT bis Lollipop – finde deinen Stil.',
             'tools.eyebrow': '100+ Built-in Tools',
-            'tools.title': 'Verbinde <em>alles</em> - aus der Box',
+            'tools.title': 'Verbinde <em>alles</em> – aus der Box',
             'tools.subtitle': 'Von Home Assistant über Docker bis zu Google Workspace. Keine shady Skills aus dem Internet nötig.',
             'tools.home': 'Home Lab',
             'tools.system': 'System',
@@ -1373,7 +1438,7 @@ go build -o aurago ./cmd/aurago
             'tools.ic5': 'Homepage Dashboard',
             'memory.eyebrow': 'Memory System',
             'memory.title': 'Er erinnert sich. <em>Wirklich.</em>',
-            'memory.subtitle': 'AuraGo plaudert nicht nur, es behält. Mit einem mehrschichtigen Memory-System, das über Zeit lernt.',
+            'memory.subtitle': 'AuraGo plaudert nicht nur – er merkt sich auch, worum es ging. Mit einem mehrschichtigen Memory-System, das über Zeit lernt.',
             'memory.st.title': 'Short-Term Memory',
             'memory.st.desc': 'Konversationshistorie mit SQLite Sliding Window. Kontext bleibt erhalten.',
             'memory.lt.title': 'Long-Term RAG',
@@ -1384,45 +1449,67 @@ go build -o aurago ./cmd/aurago
             'memory.core.desc': 'Permanente Fakten, die immer im Kontext bleiben. Chronologisches Event-Log mit Importance Scoring.',
             'memory.smart.title': 'Smart Features',
             'memory.smart.desc': 'Memory Analysis extrahiert in Echtzeit Fakten. Nightly Consolidation archiviert alte Chats. Weekly Reflection erkennt Muster.',
+            'memory.ins.title': 'Insights & Korrekturen',
+            'memory.ins.desc': 'Insights behalten ihre Belege und Revisionen. Mit Memory-Korrekturen berichtigst du, was der Agent falsch abgelegt hat.',
+            'memory.alt': 'Illustration: Verlauf, Core Memory, semantisches Memory und Knowledge Graph fließen in den Kontext für das Modell',
             'install.eyebrow': 'Schnellstart',
             'install.title': 'In <em>Sekunden</em> startklar',
-            'install.subtitle': 'Wähle deinen Installationspfad: One-Liner, Docker Compose oder Build from Source.',
-            'install.tab1': 'One-Liner',
+            'install.subtitle': 'Wähle deinen Weg: signierter Installer, Docker Compose oder aus dem Quellcode.',
+            'install.tab1': 'Installer',
             'install.tab2': 'Docker Compose',
-            'install.tab3': 'Build from Source',
-            'req.eyebrow': 'System',
+            'install.tab3': 'Aus dem Quellcode',
+            'install.c.signed': '# Signierter Installer (empfohlen) – prüft Release-Signatur und alle Dateien',
+            'install.c.main': '# Oder: Quick Install direkt vom main-Branch',
+            'install.c.starts': '# Der Installer startet AuraGo und zeigt URL + Erst-Passwort.',
+            'install.c.usually': '# Meist: http://localhost:8088',
+            'install.c.persist': '# Persistente Volumes + eingeschränkter Docker-Socket-Proxy',
+            'install.c.open': '# Öffne http://localhost:8088',
+            'install.c.req': '# Benötigt Go 1.27.3+ und Node.js',
+            'install.note': 'Mehr dazu im <a href="https://github.com/antibyte/AuraGo/blob/main/documentation/docker_installation.md" target="_blank" rel="noopener">Docker-Leitfaden</a> und im <a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manuals/de/README.md" target="_blank" rel="noopener">Handbuch</a>.',
+            'copy.idle': 'Kopieren',
+            'copy.done': 'Kopiert',
+            'copy.fail': 'Fehlgeschlagen',
+            'copy.aria': 'Code in die Zwischenablage kopieren',
+            'nav.menu': 'Menü',
+            'lang.label': 'Sprache',
+            'req.eyebrow': 'Systemanforderungen',
             'req.title': 'Was du <em>brauchst</em>',
-            'req.subtitle': 'AuraGo läuft auf fast allem, vom Raspberry Pi bis zum Homeserver.',
-            'req.min.badge': 'Minimal',
-            'req.min.title': 'Raspberry Pi',
-            'req.min.cpu': 'Dual Core CPU',
+            'req.subtitle': 'Ein Linux-Rechner und etwas Platz für einen Gopher. Debian-basiert ist ideal.',
+            'req.min.badge': 'Minimum',
+            'req.min.title': 'Raspberry Pi / kleine VM',
+            'req.min.cpu': 'Dual-Core CPU',
             'req.min.ram': '<strong>2 GB</strong> RAM',
-            'req.min.storage': '<strong>5 GB</strong> Storage',
+            'req.min.storage': '<strong>1 GB</strong> freier Speicher',
             'req.rec.badge': 'Empfohlen',
-            'req.rec.title': 'Homeserver',
-            'req.rec.cpu': 'Quad Core CPU',
-            'req.rec.ram': '<strong>4 GB</strong> RAM',
-            'req.rec.storage': '<strong>20 GB</strong> Storage',
-            'req.perf.badge': 'Perfekt',
-            'req.perf.title': 'Powerhouse',
-            'req.perf.cpu': 'Quad Core CPU',
-            'req.perf.ram': '<strong>8 GB</strong> RAM',
-            'req.perf.storage': '<strong>100 GB</strong> Storage',
+            'req.rec.title': 'Mini-PC / Proxmox LXC',
+            'req.rec.cpu': 'Quad-Core CPU',
+            'req.rec.ram': '<strong>8 GB</strong> RAM',
+            'req.rec.storage': '<strong>20+ GB</strong> SSD',
+            'req.opt.badge': 'Optional',
+            'req.opt.title': 'Lokale KI',
+            'req.opt.gpu': 'Integrierte oder dedizierte GPU',
+            'req.opt.ram': 'Extra RAM / VRAM fürs Modell',
+            'req.opt.storage': 'Extra Speicher für Modelle',
+            'req.note': 'Die Angaben gelten für AuraGo selbst – lokale Modelle und optionale Dienste brauchen zusätzlich RAM, Speicher und ggf. GPU-Speicher.',
             'companion.title': '<em>agodesk</em> Companion App',
-            'companion.subtitle': 'Der plattformunabhängige Desktop-Client für AuraGo. Windows, Linux - verbindet sich per WebSocket, kein Browser nötig.',
+            'companion.eyebrow': 'Desktop-Client',
+            'companion.alt': 'agodesk Desktop-Client mit Chat und Sprachsteuerung',
+            'companion.subtitle': 'Der plattformunabhängige Desktop-Client für AuraGo. Windows, Linux – verbindet sich per WebSocket, kein Browser nötig.',
             'companion.cta': 'Downloads &amp; Releases',
             'companion.source': 'Quellcode auf GitHub',
             'faq.title': 'Häufige <em>Fragen</em>',
             'faq.q1': 'Was ist AuraGo?',
             'faq.a1': 'AuraGo ist ein selbst gehosteter AI Agent für Home Labs. Er läuft als Single Binary mit zero Dependencies auf jedem Linux-Server oder Raspberry Pi. Er hat direkten Zugriff auf deine Infrastruktur, hält alle Daten lokal und arbeitet 24/7 für dich, on demand oder automatisiert.',
             'faq.q2': 'Kann ich lokale Modelle nutzen?',
-            'faq.a2': 'Ja. AuraGo unterstützt Ollama out of the box für lokale Modelle wie Llama 3, Mistral und andere. Du kannst auch beliebige OpenAI-kompatible APIs oder OpenRouter nutzen.',
+            'faq.a2': 'Ja. AuraGo unterstützt Ollama out of the box für lokale Modelle wie Qwen, Llama, Mistral oder Gemma. Du kannst auch jede OpenAI-kompatible API oder OpenRouter nutzen.',
             'faq.q3': 'Ist AuraGo produktionsreif?',
-            'faq.a3': 'AuraGo ist unter aktiver Entwicklung. Viele Features sind bereits stabil und werden produktiv genutzt. Es gibt gelegentlich Breaking Changes. Windows- und macOS-Support ist theoretisch vorhanden, aber nicht getestet.',
+            'faq.a3': 'AuraGo ist unter aktiver Entwicklung – ein Maintainer, gelegentlich raue Kanten und Breaking Changes. Linux steht an erster Stelle; Windows- und macOS-Builds sind weniger getestet.',
             'faq.q4': 'Wie sicher ist AuraGo?',
             'faq.a4': 'AuraGo wurde Security-First entwickelt: AES-256-GCM Vault für API-Keys, bcrypt + TOTP 2FA, Sandbox für Python-Execution, HTTPS mit Auto-TLS, LLM Guardian für Tool-Call-Scanning und granularer Danger Zone mit individuellen Toggles.',
             'faq.q5': 'Wie kann ich mitmachen?',
             'faq.a5': 'Schau auf <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a> vorbei. Issues, PRs und Diskussionen sind willkommen. Das Projekt ist ein One-Man-Projekt. Jede Hilfe zählt.',
+            'faq.q6': 'Bleiben meine Daten wirklich lokal?',
+            'faq.a6': 'Deine Daten liegen bei deiner Installation. Gehostete Modelle und externe Dienste erhalten aber die Eingaben ihrer Anfragen – self-hosted heißt nicht automatisch offline. Mit lokalen Modellen über Ollama bleibt alles im Haus.',
             'footer.brand': 'Dein Home Lab AI Agent. Single binary, zero dependencies, läuft auf deiner Hardware. Open Source unter MIT License.',
             'footer.col1': 'Produkt',
             'footer.col2': 'Ressourcen',
@@ -1432,12 +1519,12 @@ go build -o aurago ./cmd/aurago
             'footer.res3': 'Konfiguration',
             'footer.res4': 'Architektur',
             'footer.comm2': 'Issues',
-            'footer.comm3': 'Diskussionen',
+            'footer.comm3': 'Releases',
             'footer.by': 'Ein Projekt von',
             'skipLink': 'Zum Inhalt springen',
         },
         en: {
-            'meta.title': 'AuraGo - Your Home Lab AI Agent',
+            'meta.title': 'AuraGo – Your Home Lab AI Agent',
             'meta.desc': 'AuraGo is a self-hosted AI agent for home labs. Single binary, zero dependencies, runs on any Linux server or Raspberry Pi.',
             'nav.features': 'Features',
             'nav.screenshots': 'Screenshots',
@@ -1447,8 +1534,9 @@ go build -o aurago ./cmd/aurago
             'nav.companion': 'agodesk',
             'nav.faq': 'FAQ',
             'nav.github': 'GitHub',
-            'hero.eyebrow': 'Open Source \u00b7 Self-Hosted',
-            'hero.title': 'Your <em>Home Lab AI Agent</em> - single binary, zero dependencies',
+            'hero.eyebrow': 'Open Source · Self-Hosted',
+            'hero.title': 'Your <em>Home Lab AI Agent</em><span class="hero-tagline">Single binary, zero dependencies.</span>',
+            'hero.badgeLang': '16 UI languages',
             'hero.desc': 'AuraGo runs on your hardware with direct access to your infrastructure. All data stays local, 24/7.',
             'hero.wip': 'Work in Progress',
             'hero.cta1': 'Install now',
@@ -1465,7 +1553,7 @@ go build -o aurago ./cmd/aurago
             'features.fncall': 'OpenAI-compatible tool calls with auto-detection for many models. Support for OpenAI, Anthropic, Ollama and all OpenAI-compatible APIs.',
             'gallery.eyebrow': 'In Action',
             'gallery.title': 'This is <em>AuraGo</em>',
-            'gallery.subtitle': 'Dashboard, Chat, Container Management, Configuration and Themes - all from the browser.',
+            'gallery.subtitle': 'Dashboard, Chat, Container Management, Configuration and Themes – all from the browser.',
             'gallery.dashboard': 'Dashboard',
             'gallery.chat': 'Chat',
             'gallery.containers': 'Container Management',
@@ -1473,9 +1561,9 @@ go build -o aurago ./cmd/aurago
             'gallery.desktop': 'Virtual Desktop in Browser',
             'themes.eyebrow': 'Look & Feel',
             'themes.title': 'Pick your <em>Theme</em>',
-            'themes.subtitle': 'From Cyberwar to Retro CRT to Lollipop - find your style.',
+            'themes.subtitle': 'From Cyberwar to Retro CRT to Lollipop – find your style.',
             'tools.eyebrow': '100+ Built-in Tools',
-            'tools.title': 'Connect <em>everything</em> - out of the box',
+            'tools.title': 'Connect <em>everything</em> – out of the box',
             'tools.subtitle': 'From Home Assistant to Docker to Google Workspace. No shady internet skills needed.',
             'tools.home': 'Home Lab',
             'tools.system': 'System',
@@ -1547,45 +1635,67 @@ go build -o aurago ./cmd/aurago
             'memory.core.desc': 'Permanent facts that always stay in context. Chronological event log with importance scoring.',
             'memory.smart.title': 'Smart Features',
             'memory.smart.desc': 'Memory Analysis extracts facts in real time. Nightly Consolidation archives old chats. Weekly Reflection recognizes patterns.',
+            'memory.ins.title': 'Insights & corrections',
+            'memory.ins.desc': 'Insights keep their evidence and revisions. Memory corrections let you fix what the agent got wrong.',
+            'memory.alt': 'Illustration: recent history, core memory, semantic memory and the knowledge graph feed the context for the model',
             'install.eyebrow': 'Quick Start',
             'install.title': 'Ready in <em>seconds</em>',
-            'install.subtitle': 'Choose your installation path: One-Liner, Docker Compose or Build from Source.',
-            'install.tab1': 'One-Liner',
+            'install.subtitle': 'Pick your path: signed installer, Docker Compose or build from source.',
+            'install.tab1': 'Installer',
             'install.tab2': 'Docker Compose',
             'install.tab3': 'Build from Source',
-            'req.eyebrow': 'System',
+            'install.c.signed': '# Signed installer (recommended) – verifies the release signature and every file',
+            'install.c.main': '# Or: quick install straight from the main branch',
+            'install.c.starts': '# The installer starts AuraGo and prints the URL + first-login password.',
+            'install.c.usually': '# Usually: http://localhost:8088',
+            'install.c.persist': '# Persistent volumes + restricted Docker socket proxy',
+            'install.c.open': '# Open http://localhost:8088',
+            'install.c.req': '# Requires Go 1.27.3+ and Node.js',
+            'install.note': 'More in the <a href="https://github.com/antibyte/AuraGo/blob/main/documentation/docker_installation.md" target="_blank" rel="noopener">Docker guide</a> and the <a href="https://github.com/antibyte/AuraGo/blob/main/documentation/manuals/en/README.md" target="_blank" rel="noopener">manual</a>.',
+            'copy.idle': 'Copy',
+            'copy.done': 'Copied',
+            'copy.fail': 'Failed',
+            'copy.aria': 'Copy code to clipboard',
+            'nav.menu': 'Menu',
+            'lang.label': 'Language',
+            'req.eyebrow': 'Requirements',
             'req.title': 'What you <em>need</em>',
-            'req.subtitle': 'AuraGo runs on almost anything, from Raspberry Pi to home server.',
-            'req.min.badge': 'Minimal',
-            'req.min.title': 'Raspberry Pi',
-            'req.min.cpu': 'Dual Core CPU',
+            'req.subtitle': 'A Linux box and a little room for a gopher. Debian-based is ideal.',
+            'req.min.badge': 'Minimum',
+            'req.min.title': 'Raspberry Pi / small VM',
+            'req.min.cpu': 'Dual-core CPU',
             'req.min.ram': '<strong>2 GB</strong> RAM',
-            'req.min.storage': '<strong>5 GB</strong> Storage',
+            'req.min.storage': '<strong>1 GB</strong> free storage',
             'req.rec.badge': 'Recommended',
-            'req.rec.title': 'Home Server',
-            'req.rec.cpu': 'Quad Core CPU',
-            'req.rec.ram': '<strong>4 GB</strong> RAM',
-            'req.rec.storage': '<strong>20 GB</strong> Storage',
-            'req.perf.badge': 'Perfect',
-            'req.perf.title': 'Powerhouse',
-            'req.perf.cpu': 'Quad Core CPU',
-            'req.perf.ram': '<strong>8 GB</strong> RAM',
-            'req.perf.storage': '<strong>100 GB</strong> Storage',
+            'req.rec.title': 'Mini PC / Proxmox LXC',
+            'req.rec.cpu': 'Quad-core CPU',
+            'req.rec.ram': '<strong>8 GB</strong> RAM',
+            'req.rec.storage': '<strong>20+ GB</strong> SSD',
+            'req.opt.badge': 'Optional',
+            'req.opt.title': 'Local AI',
+            'req.opt.gpu': 'Integrated or dedicated GPU',
+            'req.opt.ram': 'Extra RAM / VRAM for the model',
+            'req.opt.storage': 'Extra storage for models',
+            'req.note': 'These specs cover AuraGo itself – local models and optional services need extra RAM, storage and, where applicable, GPU memory.',
             'companion.title': '<em>agodesk</em> Companion App',
-            'companion.subtitle': 'Cross-platform desktop client for AuraGo. Windows, Linux - connects via WebSocket, no browser needed.',
+            'companion.eyebrow': 'Desktop client',
+            'companion.alt': 'agodesk desktop client with chat and voice',
+            'companion.subtitle': 'Cross-platform desktop client for AuraGo. Windows, Linux – connects via WebSocket, no browser needed.',
             'companion.cta': 'Downloads &amp; Releases',
             'companion.source': 'Source on GitHub',
             'faq.title': 'Frequently Asked <em>Questions</em>',
             'faq.q1': 'What is AuraGo?',
             'faq.a1': 'AuraGo is a self-hosted AI agent for home labs. It runs as a single binary with zero dependencies on any Linux server or Raspberry Pi. It has direct access to your infrastructure, keeps all data local and works 24/7 for you, on demand or automated.',
             'faq.q2': 'Can I use local models?',
-            'faq.a2': 'Yes. AuraGo supports Ollama out of the box for local models like Llama 3, Mistral and others. You can also use any OpenAI-compatible API or OpenRouter.',
+            'faq.a2': 'Yes. AuraGo supports Ollama out of the box for local models like Qwen, Llama, Mistral or Gemma. You can also use any OpenAI-compatible API or OpenRouter.',
             'faq.q3': 'Is AuraGo production-ready?',
-            'faq.a3': 'AuraGo is under active development. Many features are already stable and used in production. There are occasional breaking changes. Windows and macOS support is built in in theory, but not tested.',
+            'faq.a3': 'AuraGo is under active development – one maintainer, occasional rough edges and breaking changes. Linux comes first; Windows and macOS builds are less tested.',
             'faq.q4': 'How secure is AuraGo?',
             'faq.a4': 'AuraGo was designed security-first: AES-256-GCM Vault for API keys, bcrypt + TOTP 2FA, Sandbox for Python execution, HTTPS with Auto-TLS, LLM Guardian for tool-call scanning and granular Danger Zone with individual toggles.',
             'faq.q5': 'How can I contribute?',
             'faq.a5': 'Head over to <a href="https://github.com/antibyte/AuraGo" target="_blank" rel="noopener">GitHub</a>. Issues, PRs and discussions are welcome. This is a one-man project. Every bit helps.',
+            'faq.q6': 'Does my data really stay local?',
+            'faq.a6': 'Your data lives with your installation. Hosted models and external services do receive the inputs of your requests – self-hosted does not automatically mean offline. With local models via Ollama everything stays in-house.',
             'footer.brand': 'Your Home Lab AI Agent. Single binary, zero dependencies, runs on your hardware. Open Source under MIT License.',
             'footer.col1': 'Product',
             'footer.col2': 'Resources',
@@ -1595,23 +1705,37 @@ go build -o aurago ./cmd/aurago
             'footer.res3': 'Configuration',
             'footer.res4': 'Architecture',
             'footer.comm2': 'Issues',
-            'footer.comm3': 'Discussions',
+            'footer.comm3': 'Releases',
             'footer.by': 'A project by',
             'skipLink': 'Skip to content',
         }
     };
 
-    let currentLang = localStorage.getItem('aurago-lang') || 'de';
+    const store = {
+        get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+        set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage unavailable */ } }
+    };
+    function detectLang() {
+        const saved = store.get('aurago-lang');
+        if (saved === 'de' || saved === 'en') return saved;
+        return (navigator.language || '').toLowerCase().startsWith('de') ? 'de' : 'en';
+    }
+    let currentLang = detectLang();
+    const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function applyLang(lang) {
+    function applyLang(lang, persist) {
         currentLang = lang;
-        localStorage.setItem('aurago-lang', lang);
+        if (persist) store.set('aurago-lang', lang);
         document.documentElement.lang = lang;
 
         // Update switch buttons
         document.querySelectorAll('.lang-switch button').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.lang === lang);
+            const on = btn.dataset.lang === lang;
+            btn.classList.toggle('active', on);
+            btn.setAttribute('aria-pressed', String(on));
         });
+        document.getElementById('langSwitch').setAttribute('aria-label', i18n[lang]['lang.label']);
+        document.getElementById('mobileMenuBtn').setAttribute('aria-label', i18n[lang]['nav.menu']);
 
         // Update all data-i18n elements
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1627,10 +1751,16 @@ go build -o aurago ./cmd/aurago
                 }
             }
         });
+
+        // Relabel idle copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.setAttribute('aria-label', i18n[lang]['copy.aria']);
+            if (!btn.dataset.busy) btn.textContent = i18n[lang]['copy.idle'];
+        });
     }
 
     document.querySelectorAll('.lang-switch button').forEach(btn => {
-        btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+        btn.addEventListener('click', () => applyLang(btn.dataset.lang, true));
     });
 
     // ===== Navbar scroll (IntersectionObserver, no scroll listener) =====
@@ -1644,24 +1774,42 @@ go build -o aurago ./cmd/aurago
     // ===== Mobile menu =====
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const navLinks = document.getElementById('navLinks');
-    mobileBtn.addEventListener('click', () => {
-        const open = navLinks.classList.toggle('nav-open');
-        mobileBtn.innerHTML = open ? '\u2715' : '\u2630';
-        mobileBtn.setAttribute('aria-expanded', open);
+    function setMenu(open) {
+        navLinks.classList.toggle('nav-open', open);
+        mobileBtn.innerHTML = open ? '&#10005;' : '&#9776;';
+        mobileBtn.setAttribute('aria-expanded', String(open));
+    }
+    const menuOpen = () => navLinks.classList.contains('nav-open');
+    mobileBtn.addEventListener('click', () => setMenu(!menuOpen()));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && menuOpen()) { setMenu(false); mobileBtn.focus(); }
     });
-    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-        navLinks.classList.remove('nav-open');
-        mobileBtn.innerHTML = '\u2630';
-        mobileBtn.setAttribute('aria-expanded', 'false');
-    }));
+    document.addEventListener('click', e => {
+        if (menuOpen() && !navbar.contains(e.target)) setMenu(false);
+    });
 
     // ===== Install tabs =====
-    document.querySelectorAll('.install-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.install-panel').forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    const installTabs = Array.from(document.querySelectorAll('.install-tab'));
+    function selectTab(tab, focus) {
+        installTabs.forEach(t => {
+            const on = t === tab;
+            t.classList.toggle('active', on);
+            t.setAttribute('aria-selected', String(on));
+            t.tabIndex = on ? 0 : -1;
+            document.getElementById('panel-' + t.dataset.tab).classList.toggle('active', on);
+        });
+        if (focus) tab.focus();
+    }
+    installTabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => selectTab(tab, false));
+        tab.addEventListener('keydown', e => {
+            let next = null;
+            if (e.key === 'ArrowRight') next = installTabs[(i + 1) % installTabs.length];
+            else if (e.key === 'ArrowLeft') next = installTabs[(i - 1 + installTabs.length) % installTabs.length];
+            else if (e.key === 'Home') next = installTabs[0];
+            else if (e.key === 'End') next = installTabs[installTabs.length - 1];
+            if (next) { e.preventDefault(); selectTab(next, true); }
         });
     });
 
@@ -1670,8 +1818,14 @@ go build -o aurago ./cmd/aurago
         btn.addEventListener('click', () => {
             const item = btn.closest('.faq-item');
             const open = item.classList.contains('open');
-            document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-            if (!open) item.classList.add('open');
+            document.querySelectorAll('.faq-item.open').forEach(i => {
+                i.classList.remove('open');
+                i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+            });
+            if (!open) {
+                item.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+            }
         });
     });
 
@@ -1679,15 +1833,16 @@ go build -o aurago ./cmd/aurago
     document.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const code = btn.dataset.code;
+            const reset = () => { delete btn.dataset.busy; btn.classList.remove('copied'); btn.textContent = i18n[currentLang]['copy.idle']; };
+            btn.dataset.busy = '1';
             try {
                 await navigator.clipboard.writeText(code);
-                btn.textContent = 'Copied';
+                btn.textContent = i18n[currentLang]['copy.done'];
                 btn.classList.add('copied');
-                setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-            } catch {
-                btn.textContent = 'Failed';
-                setTimeout(() => btn.textContent = 'Copy', 2000);
+            } catch (e) {
+                btn.textContent = i18n[currentLang]['copy.fail'];
             }
+            setTimeout(reset, 2000);
         });
     });
 
@@ -1711,7 +1866,11 @@ go build -o aurago ./cmd/aurago
             const id = a.getAttribute('href');
             if (id === '#') return;
             const target = document.querySelector(id);
-            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+                if (id === '#main' || id === '#home') document.getElementById('main').focus({ preventScroll: true });
+            }
         });
     });
 
@@ -1732,7 +1891,7 @@ go build -o aurago ./cmd/aurago
     });
 
     // Apply initial language
-    applyLang(currentLang);
+    applyLang(currentLang, false);
     </script>
 </body>
 </html>
